@@ -8,6 +8,8 @@ authors = ["nakatuba <nakatuba0626@gmail.com>"]
 python = "^3.8"
 Django = "^4.1"
 django-environ = "^0.9.0"
+djangorestframework = "^3.13.1"
+drf-spectacular = "^0.23.1"
 psycopg2 = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
@@ -15,6 +17,7 @@ flake8 = "^5.0.4"
 black = "^22.6.0"
 isort = "^5.10.1"
 django-stubs = "^1.12.0"
+djangorestframework-stubs = "^1.7.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
