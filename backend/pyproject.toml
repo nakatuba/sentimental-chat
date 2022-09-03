@@ -7,8 +7,10 @@ authors = ["nakatuba <nakatuba0626@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 Django = "^4.1"
+django-cors-headers = "^3.13.0"
 django-environ = "^0.9.0"
 djangorestframework = "^3.13.1"
+djoser = "^2.1.0"
 drf-spectacular = "^0.23.1"
 psycopg2 = "^2.9.3"
 
