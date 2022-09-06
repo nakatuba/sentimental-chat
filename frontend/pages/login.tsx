@@ -2,35 +2,25 @@ import {
   Box,
   Button,
   Flex,
-  FormControl,
   FormLabel,
   Input,
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
+import { signIn } from 'next-auth/react'
 
 export default function Login() {
-  const router = useRouter()
-
-  // TODO: エラーハンドリング
-  const fetchToken = async (event: React.FormEvent) => {
+  const authenticate = async (event: React.FormEvent) => {
     event.preventDefault()
     const target = event.target as typeof event.target & {
       username: { value: string }
       password: { value: string }
     }
-    await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: target.username.value,
-        password: target.password.value,
-      }),
+    signIn('credentials', {
+      username: target.username.value,
+      password: target.password.value,
+      callbackUrl: '/',
     })
-    router.push('/')
   }
 
   return (
@@ -47,15 +37,15 @@ export default function Login() {
         minW="lg"
         p={8}
       >
-        <Stack as="form" spacing={4} onSubmit={fetchToken}>
-          <FormControl id="username">
+        <Stack as="form" spacing={4} onSubmit={authenticate}>
+          <Box>
             <FormLabel>Username</FormLabel>
-            <Input />
-          </FormControl>
-          <FormControl id="password">
+            <Input name="username" type="text" />
+          </Box>
+          <Box>
             <FormLabel>Password</FormLabel>
-            <Input type="password" />
-          </FormControl>
+            <Input name="password" type="password" />
+          </Box>
           <Stack pt={4}>
             <Button
               type="submit"
@@ -63,7 +53,7 @@ export default function Login() {
               color="white"
               _hover={{ bg: 'blue.500' }}
             >
-              Login
+              Sign in
             </Button>
           </Stack>
         </Stack>
