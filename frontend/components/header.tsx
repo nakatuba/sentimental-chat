@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, HStack } from '@chakra-ui/react'
+import { Button, Flex, HStack } from '@chakra-ui/react'
 import { signOut } from 'next-auth/react'
 
 export default function Header() {
@@ -11,7 +11,7 @@ export default function Header() {
           bg="blue.400"
           color="white"
           _hover={{ bg: 'blue.500' }}
-          onClick={() => signOut({ callbackUrl: '/signin' })}
+          onClick={() => signOut({ callbackUrl: '/login' })}
         >
           Sign out
         </Button>
