@@ -5,13 +5,29 @@ import type { GetServerSidePropsContext } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
+import Pusher from 'pusher-js'
+import { useEffect, useState } from 'react'
 
 type Props = {
   messages: Message[]
 }
 
-export default function Home({ messages }: Props) {
+export default function Home(props: Props) {
   const { data: session } = useSession()
+  const [messages, setMessages] = useState(props.messages)
+  const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY ?? '', {
+    cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+  })
+
+  useEffect(() => {
+    const channel = pusher.subscribe('public-channel')
+
+    channel.bind('send-event', function (data: Message) {
+      setMessages([...messages, data])
+    })
+
+    return () => pusher.unsubscribe('public-channel')
+  })
 
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -28,7 +44,7 @@ export default function Home({ messages }: Props) {
         body: target.body.value,
       }),
     })
-    window.location.reload()
+    target.body.value = ''
   }
 
   return (
