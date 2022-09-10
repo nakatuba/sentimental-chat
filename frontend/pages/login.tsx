@@ -10,7 +10,7 @@ import {
 import { signIn } from 'next-auth/react'
 
 export default function Login() {
-  const authenticate = async (event: React.FormEvent) => {
+  const login = async (event: React.FormEvent) => {
     event.preventDefault()
     const target = event.target as typeof event.target & {
       username: { value: string }
@@ -37,7 +37,7 @@ export default function Login() {
         minW="lg"
         p={8}
       >
-        <Stack as="form" spacing={4} onSubmit={authenticate}>
+        <Stack as="form" spacing={4} onSubmit={login}>
           <Box>
             <FormLabel>Username</FormLabel>
             <Input name="username" type="text" />

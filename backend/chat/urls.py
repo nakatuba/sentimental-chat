@@ -1,4 +1,4 @@
-from api.views import MessageViewSet, UserViewSet
+from api.views import MessageViewSet, UserViewSet, send
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.jwt')),
+    path('api/send/', send),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path(
         'api/schema/swagger-ui/',
