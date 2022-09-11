@@ -1,13 +1,15 @@
 import pusher
 from chat import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from djoser import views
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Message
-from .serializers import MessageSerializer, UserSerializer
+from .serializers import (MessageSerializer, SenderSerializer,
+                          SendMessageSerializer, SetIconSerializer)
 
 pusher_client = pusher.Pusher(
     app_id=settings.PUSHER_APP_ID,
@@ -17,39 +19,36 @@ pusher_client = pusher.Pusher(
     ssl=True,
 )
 
+User = get_user_model()
 
-class UserViewSet(viewsets.ModelViewSet):
+
+class UserViewSet(views.UserViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = SenderSerializer
+
+    @extend_schema(request=SetIconSerializer, responses={204: None})
+    @action(detail=False, methods=['post'])
+    def set_icon(self, request):
+        serializer = SetIconSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = request.user
+        user.icon = serializer.validated_data['icon']
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
+    @extend_schema(request=SendMessageSerializer, responses={201: MessageSerializer})
+    @action(detail=False, methods=['post'])
+    def send(self, request):
+        serializer = SendMessageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        message = serializer.save(sender=request.user)
 
-@extend_schema(
-    request={
-        'application/json': {
-            'type': 'object',
-            'properties': {
-                'body': {'type': 'string'},
-            },
-        }
-    },
-    responses=MessageSerializer,
-)
-@api_view(['POST'])
-def send(request):
-    serializer = MessageSerializer(
-        data={
-            'sender': request.user.id,
-            'body': request.data['body'],
-        }
-    )
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
+        serializer = self.get_serializer(message)
+        pusher_client.trigger('public-channel', 'send-event', serializer.data)
 
-    pusher_client.trigger('public-channel', 'send-event', serializer.data)
-
-    return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
