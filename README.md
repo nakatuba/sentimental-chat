@@ -11,6 +11,10 @@ NEXT_PUBLIC_PUSHER_APP_KEY=xxxx
 NEXT_PUBLIC_PUSHER_APP_CLUSTER=xxxx
 ```
 ### backend
+```
+make migrate
+make createsuperuser
+```
 backend/.env
 ```
 SECRET_KEY=xxxx
