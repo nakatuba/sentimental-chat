@@ -1,6 +1,7 @@
 import Header from '../components/header'
+import MessageBox from '../components/message-box'
 import type { Message } from '../interfaces'
-import { Box, Button, HStack, Input } from '@chakra-ui/react'
+import { Button, HStack, Input } from '@chakra-ui/react'
 import type { GetServerSidePropsContext } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
@@ -34,7 +35,7 @@ export default function Home(props: Props) {
     const target = event.target as typeof event.target & {
       body: { value: string }
     }
-    await fetch('http://localhost:8000/api/send/', {
+    await fetch('http://localhost:8000/api/messages/send/', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
@@ -56,7 +57,7 @@ export default function Home(props: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {messages.map(message => (
-        <Box key={message.id}>{message.body}</Box>
+        <MessageBox key={message.id} message={message} />
       ))}
       <HStack as="form" onSubmit={sendMessage}>
         <Input name="body" />

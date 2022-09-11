@@ -1,8 +1,13 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from model_utils.models import UUIDModel
 
 
-class Message(models.Model):
+class User(AbstractUser, UUIDModel):
+    icon = models.ImageField()
+
+
+class Message(UUIDModel):
     created_at = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField()
