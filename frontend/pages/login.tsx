@@ -1,12 +1,5 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormLabel,
-  Input,
-  Stack,
-  useColorModeValue,
-} from '@chakra-ui/react'
+import AuthForm from '../components/auth-form'
+import { Box, Button, FormLabel, Input, Stack } from '@chakra-ui/react'
 import { signIn } from 'next-auth/react'
 
 export default function Login() {
@@ -24,40 +17,25 @@ export default function Login() {
   }
 
   return (
-    <Flex
-      minH="100vh"
-      align="center"
-      justify="center"
-      bg={useColorModeValue('gray.50', 'gray.800')}
-    >
-      <Box
-        rounded="lg"
-        bg={useColorModeValue('white', 'gray.700')}
-        boxShadow="lg"
-        minW="lg"
-        p={8}
+    <AuthForm onSubmit={login}>
+      <Stack spacing={4}>
+        <Box>
+          <FormLabel>Username</FormLabel>
+          <Input name="username" type="text" />
+        </Box>
+        <Box>
+          <FormLabel>Password</FormLabel>
+          <Input name="password" type="password" />
+        </Box>
+      </Stack>
+      <Button
+        type="submit"
+        bg="blue.400"
+        color="white"
+        _hover={{ bg: 'blue.500' }}
       >
-        <Stack as="form" spacing={4} onSubmit={login}>
-          <Box>
-            <FormLabel>Username</FormLabel>
-            <Input name="username" type="text" />
-          </Box>
-          <Box>
-            <FormLabel>Password</FormLabel>
-            <Input name="password" type="password" />
-          </Box>
-          <Stack pt={4}>
-            <Button
-              type="submit"
-              bg="blue.400"
-              color="white"
-              _hover={{ bg: 'blue.500' }}
-            >
-              Sign in
-            </Button>
-          </Stack>
-        </Stack>
-      </Box>
-    </Flex>
+        Sign in
+      </Button>
+    </AuthForm>
   )
 }
