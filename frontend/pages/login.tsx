@@ -1,5 +1,13 @@
 import AuthForm from '../components/auth-form'
-import { Box, Button, FormLabel, Input, Stack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  FormLabel,
+  Input,
+  Link,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import { signIn } from 'next-auth/react'
 
 export default function Login() {
@@ -17,7 +25,17 @@ export default function Login() {
   }
 
   return (
-    <AuthForm onSubmit={login}>
+    <AuthForm
+      below={
+        <Text>
+          アカウントをお持ちでない方は{' '}
+          <Link color="blue.400" href="/signup">
+            新規登録
+          </Link>
+        </Text>
+      }
+      onSubmit={login}
+    >
       <Stack spacing={4}>
         <Box>
           <FormLabel>Username</FormLabel>
