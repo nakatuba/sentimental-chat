@@ -1,10 +1,14 @@
 import AuthForm from '../components/auth-form'
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import {
   Avatar,
-  Box,
   Button,
+  FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
+  InputGroup,
+  InputRightElement,
   Link,
   Stack,
   Text,
@@ -15,6 +19,9 @@ import { useRef, useState } from 'react'
 export default function Signup() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [image, setImage] = useState<File>()
+  const [showPassword, setShowPassword] = useState(false)
+  const [usernameErrorMessages, setUsernameErrorMessages] = useState([])
+  const [passwordErrorMessages, setPasswordErrorMessages] = useState([])
 
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -36,21 +43,22 @@ export default function Signup() {
     const target = event.target as typeof event.target & {
       username: { value: string }
       password: { value: string }
-      re_password: { value: string }
     }
     const formData = new FormData()
-    if (image) {
-      formData.append('icon', image)
-    }
+    image && formData.append('icon', image)
     formData.append('username', target.username.value)
     formData.append('password', target.password.value)
-    formData.append('re_password', target.re_password.value)
 
     const res = await fetch('http://localhost:8000/api/users/', {
       method: 'POST',
       body: formData,
     })
-    if (!res.ok) return
+    if (!res.ok) {
+      const errorMessage = await res.json()
+      errorMessage.username && setUsernameErrorMessages(errorMessage.username)
+      errorMessage.password && setPasswordErrorMessages(errorMessage.password)
+      return
+    }
 
     signIn('credentials', {
       username: target.username.value,
@@ -92,18 +100,40 @@ export default function Signup() {
             画像を削除
           </Button>
         </Stack>
-        <Box>
+        <FormControl
+          id="username"
+          isRequired
+          isInvalid={usernameErrorMessages.length > 0}
+          onChange={() => setUsernameErrorMessages([])}
+        >
           <FormLabel>Username</FormLabel>
-          <Input name="username" type="text" />
-        </Box>
-        <Box>
+          <Input type="text" />
+          {usernameErrorMessages.map((errorMessage, index) => (
+            <FormErrorMessage key={index}>{errorMessage}</FormErrorMessage>
+          ))}
+        </FormControl>
+        <FormControl
+          id="password"
+          isRequired
+          isInvalid={passwordErrorMessages.length > 0}
+          onChange={() => setPasswordErrorMessages([])}
+        >
           <FormLabel>Password</FormLabel>
-          <Input name="password" type="password" />
-        </Box>
-        <Box>
-          <FormLabel>Confirm password</FormLabel>
-          <Input name="re_password" type="password" />
-        </Box>
+          <InputGroup>
+            <Input type={showPassword ? 'text' : 'password'} />
+            <InputRightElement>
+              <Button
+                variant="ghost"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          {passwordErrorMessages.map((errorMessage, index) => (
+            <FormErrorMessage key={index}>{errorMessage}</FormErrorMessage>
+          ))}
+        </FormControl>
       </Stack>
       <Button
         type="submit"
