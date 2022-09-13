@@ -20,7 +20,7 @@ export default function AuthForm({ children, below, onSubmit }: Props) {
         rounded="lg"
         bg={useColorModeValue('white', 'gray.700')}
         boxShadow="lg"
-        minW="lg"
+        width="lg"
         p={8}
       >
         <Stack as="form" spacing={8} onSubmit={onSubmit}>
