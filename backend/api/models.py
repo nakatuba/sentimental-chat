@@ -4,7 +4,7 @@ from model_utils.models import UUIDModel
 
 
 class User(AbstractUser, UUIDModel):
-    icon = models.ImageField(null=True)
+    icon = models.ImageField(blank=True)
     REQUIRED_FIELDS = ['icon']
 
 
