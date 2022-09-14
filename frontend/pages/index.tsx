@@ -6,6 +6,7 @@ import type { GetServerSidePropsContext } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import Pusher from 'pusher-js'
 import { useEffect, useState } from 'react'
 
@@ -14,6 +15,7 @@ type Props = {
 }
 
 export default function Home(props: Props) {
+  const router = useRouter()
   const { data: session } = useSession()
   const [messages, setMessages] = useState(props.messages)
   const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY ?? '', {
@@ -35,7 +37,7 @@ export default function Home(props: Props) {
     const target = event.target as typeof event.target & {
       body: { value: string }
     }
-    await fetch('http://localhost:8000/api/messages/send/', {
+    const res = await fetch('http://localhost:8000/api/messages/send/', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
@@ -45,6 +47,9 @@ export default function Home(props: Props) {
         body: target.body.value,
       }),
     })
+    if (!res.ok && res.status === 401) {
+      router.push('/login')
+    }
     target.body.value = ''
   }
 
@@ -77,7 +82,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   })
   const messages = await res.json()
 
-  if (!res.ok) {
+  if (!res.ok && res.status === 401) {
     return {
       redirect: {
         destination: '/login',
