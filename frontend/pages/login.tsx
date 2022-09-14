@@ -1,7 +1,9 @@
 import AuthForm from '../components/auth-form'
 import {
-  Box,
+  Alert,
+  AlertIcon,
   Button,
+  FormControl,
   FormLabel,
   Input,
   Link,
@@ -9,8 +11,13 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 export default function Login() {
+  const router = useRouter()
+  const [showUnauthrizedError, setShowUnauthrizedError] = useState(false)
+
   const login = async (event: React.FormEvent) => {
     event.preventDefault()
     const target = event.target as typeof event.target & {
@@ -18,9 +25,15 @@ export default function Login() {
       password: { value: string }
     }
     signIn('credentials', {
+      redirect: false,
       username: target.username.value,
       password: target.password.value,
-      callbackUrl: '/',
+    }).then(res => {
+      if (res?.ok) {
+        router.push('/')
+      } else {
+        setShowUnauthrizedError(true)
+      }
     })
   }
 
@@ -37,14 +50,26 @@ export default function Login() {
       onSubmit={login}
     >
       <Stack spacing={4}>
-        <Box>
+        {showUnauthrizedError && (
+          <Alert status="error">
+            <AlertIcon />
+            ユーザー名またはパスワードが正しくありません
+          </Alert>
+        )}
+        <FormControl
+          id="username"
+          onChange={() => setShowUnauthrizedError(false)}
+        >
           <FormLabel>Username</FormLabel>
-          <Input name="username" type="text" />
-        </Box>
-        <Box>
+          <Input type="text" />
+        </FormControl>
+        <FormControl
+          id="password"
+          onChange={() => setShowUnauthrizedError(false)}
+        >
           <FormLabel>Password</FormLabel>
-          <Input name="password" type="password" />
-        </Box>
+          <Input type="password" />
+        </FormControl>
       </Stack>
       <Button
         type="submit"
