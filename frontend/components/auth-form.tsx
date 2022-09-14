@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, useColorModeValue } from '@chakra-ui/react'
+import { Box, Flex, Stack } from '@chakra-ui/react'
 
 type Props = {
   children?: React.ReactNode
@@ -10,19 +10,13 @@ export default function AuthForm({ children, below, onSubmit }: Props) {
   return (
     <Flex
       minH="100vh"
-      align="center"
+      alignItems="center"
       justify="center"
       direction="column"
       gap={8}
-      bg={useColorModeValue('gray.50', 'gray.800')}
+      bg="gray.100"
     >
-      <Box
-        rounded="lg"
-        bg={useColorModeValue('white', 'gray.700')}
-        boxShadow="lg"
-        width="lg"
-        p={8}
-      >
+      <Box rounded="lg" bg="white" boxShadow="lg" width="lg" p={8}>
         <Stack as="form" spacing={8} onSubmit={onSubmit}>
           {children}
         </Stack>
