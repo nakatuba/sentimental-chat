@@ -6,7 +6,7 @@ import type { AppProps } from 'next/app'
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <ChakraProvider>
-      <SessionProvider session={session}>
+      <SessionProvider session={session} refetchInterval={5 * 60}>
         <Component {...pageProps} />
       </SessionProvider>
     </ChakraProvider>
