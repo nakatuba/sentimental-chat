@@ -1,15 +1,23 @@
+import AuthForm from '../components/auth-form'
 import {
-  Box,
+  Alert,
+  AlertIcon,
   Button,
-  Flex,
+  FormControl,
   FormLabel,
   Input,
+  Link,
   Stack,
-  useColorModeValue,
+  Text,
 } from '@chakra-ui/react'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 export default function Login() {
+  const router = useRouter()
+  const [showUnauthrizedError, setShowUnauthrizedError] = useState(false)
+
   const login = async (event: React.FormEvent) => {
     event.preventDefault()
     const target = event.target as typeof event.target & {
@@ -17,47 +25,60 @@ export default function Login() {
       password: { value: string }
     }
     signIn('credentials', {
+      redirect: false,
       username: target.username.value,
       password: target.password.value,
-      callbackUrl: '/',
+    }).then(res => {
+      if (res?.ok) {
+        router.push('/')
+      } else {
+        setShowUnauthrizedError(true)
+      }
     })
   }
 
   return (
-    <Flex
-      minH="100vh"
-      align="center"
-      justify="center"
-      bg={useColorModeValue('gray.50', 'gray.800')}
+    <AuthForm
+      below={
+        <Text>
+          アカウントをお持ちでない方は{' '}
+          <Link color="blue.400" href="/signup">
+            新規登録
+          </Link>
+        </Text>
+      }
+      onSubmit={login}
     >
-      <Box
-        rounded="lg"
-        bg={useColorModeValue('white', 'gray.700')}
-        boxShadow="lg"
-        minW="lg"
-        p={8}
+      <Stack spacing={4}>
+        {showUnauthrizedError && (
+          <Alert status="error">
+            <AlertIcon />
+            ユーザー名またはパスワードが正しくありません
+          </Alert>
+        )}
+        <FormControl
+          id="username"
+          onChange={() => setShowUnauthrizedError(false)}
+        >
+          <FormLabel>Username</FormLabel>
+          <Input type="text" />
+        </FormControl>
+        <FormControl
+          id="password"
+          onChange={() => setShowUnauthrizedError(false)}
+        >
+          <FormLabel>Password</FormLabel>
+          <Input type="password" />
+        </FormControl>
+      </Stack>
+      <Button
+        type="submit"
+        bg="blue.400"
+        color="white"
+        _hover={{ bg: 'blue.500' }}
       >
-        <Stack as="form" spacing={4} onSubmit={login}>
-          <Box>
-            <FormLabel>Username</FormLabel>
-            <Input name="username" type="text" />
-          </Box>
-          <Box>
-            <FormLabel>Password</FormLabel>
-            <Input name="password" type="password" />
-          </Box>
-          <Stack pt={4}>
-            <Button
-              type="submit"
-              bg="blue.400"
-              color="white"
-              _hover={{ bg: 'blue.500' }}
-            >
-              Sign in
-            </Button>
-          </Stack>
-        </Stack>
-      </Box>
-    </Flex>
+        Sign in
+      </Button>
+    </AuthForm>
   )
 }
