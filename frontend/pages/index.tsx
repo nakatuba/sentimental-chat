@@ -1,14 +1,16 @@
 import Header from '../components/header'
 import MessageBox from '../components/message-box'
 import type { Message } from '../interfaces'
-import { Button, HStack, Input } from '@chakra-ui/react'
+import { Box, HStack, IconButton, Textarea } from '@chakra-ui/react'
 import type { GetServerSidePropsContext } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Pusher from 'pusher-js'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { IoSend } from 'react-icons/io5'
+import TextareaAutosize from 'react-textarea-autosize'
 
 type Props = {
   messages: Message[]
@@ -16,6 +18,8 @@ type Props = {
 
 export default function Home(props: Props) {
   const router = useRouter()
+  const bottomBoxRef = useRef<HTMLDivElement>(null)
+  const sendButtonRef = useRef<HTMLButtonElement>(null)
   const { data: session } = useSession()
   const [messages, setMessages] = useState(props.messages)
   const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY ?? '', {
@@ -31,6 +35,11 @@ export default function Home(props: Props) {
 
     return () => pusher.unsubscribe('public-channel')
   })
+
+  useEffect(
+    () => bottomBoxRef.current?.scrollIntoView({ behavior: 'smooth' }),
+    [messages]
+  )
 
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -54,7 +63,7 @@ export default function Home(props: Props) {
   }
 
   return (
-    <>
+    <Box bg="gray.100">
       <Header />
       <Head>
         <title>Create Next App</title>
@@ -64,11 +73,40 @@ export default function Home(props: Props) {
       {messages.map(message => (
         <MessageBox key={message.id} message={message} />
       ))}
-      <HStack as="form" onSubmit={sendMessage}>
-        <Input name="body" />
-        <Button type="submit">send</Button>
+      <Box ref={bottomBoxRef} />
+      <HStack
+        as="form"
+        p={4}
+        spacing={4}
+        bg="white"
+        position="sticky"
+        bottom={0}
+        alignItems="end"
+        onSubmit={sendMessage}
+      >
+        <Textarea
+          name="body"
+          as={TextareaAutosize}
+          maxRows={8}
+          resize="none"
+          onKeyDown={e => {
+            if (e.key === 'Enter' && e.shiftKey) {
+              e.preventDefault()
+              sendButtonRef.current?.click()
+            }
+          }}
+        />
+        <IconButton
+          aria-label="Send message"
+          icon={<IoSend />}
+          type="submit"
+          bg="blue.400"
+          color="white"
+          _hover={{ bg: 'blue.500' }}
+          ref={sendButtonRef}
+        ></IconButton>
       </HStack>
-    </>
+    </Box>
   )
 }
 

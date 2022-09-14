@@ -12,7 +12,7 @@ export default function MessageBox({ message }: Props) {
         <Avatar src={message.sender.icon?.replace('backend', 'localhost')} />
         <Stack>
           <Text fontWeight="bold">{message.sender.username}</Text>
-          <Text>{message.body}</Text>
+          <Text whiteSpace="pre-line">{message.body}</Text>
         </Stack>
       </HStack>
     </Box>

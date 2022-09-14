@@ -3,7 +3,15 @@ import { signOut } from 'next-auth/react'
 
 export default function Header() {
   return (
-    <Flex p={4} alignItems="center" justifyContent="space-between">
+    <Flex
+      p={4}
+      alignItems="center"
+      justifyContent="space-between"
+      position="sticky"
+      top={0}
+      bg="white"
+      zIndex={2}
+    >
       <HStack />
       <HStack>
         <Button
