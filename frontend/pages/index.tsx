@@ -63,7 +63,7 @@ export default function Home(props: Props) {
   }
 
   return (
-    <Box bg="gray.100">
+    <Box bg="gray.100" minH="100vh">
       <Header />
       <Head>
         <title>Create Next App</title>
@@ -79,7 +79,8 @@ export default function Home(props: Props) {
         p={4}
         spacing={4}
         bg="white"
-        position="sticky"
+        position="fixed"
+        width="full"
         bottom={0}
         alignItems="end"
         onSubmit={sendMessage}
