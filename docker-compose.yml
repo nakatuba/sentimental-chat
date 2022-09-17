@@ -20,6 +20,14 @@ services:
     depends_on:
       - db
 
+  analyzer:
+    build: ./analyzer
+    volumes:
+      - ./analyzer:/analyzer
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 9000
+    ports:
+      - "9000:9000"
+
   db:
     image: postgres
     environment:
