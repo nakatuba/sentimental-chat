@@ -142,11 +142,14 @@ export default function Home(props: Props) {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = await getToken({ req: ctx.req })
 
-  const res = await fetch('http://backend:8000/api/messages/', {
-    headers: {
-      Authorization: `Bearer ${token?.accessToken}`,
-    },
-  })
+  const res = await fetch(
+    'http://backend:8000/api/messages?ordering=created_at',
+    {
+      headers: {
+        Authorization: `Bearer ${token?.accessToken}`,
+      },
+    }
+  )
   const messages = await res.json()
 
   if (!res.ok && res.status === 401) {

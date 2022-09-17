@@ -4,7 +4,7 @@ from chat import settings
 from django.contrib.auth import get_user_model
 from djoser import views
 from drf_spectacular.utils import extend_schema
-from rest_framework import status, viewsets
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -41,6 +41,8 @@ class UserViewSet(views.UserViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at']
 
     @extend_schema(request=SendMessageSerializer, responses={201: MessageSerializer})
     @action(detail=False, methods=['post'])
