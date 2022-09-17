@@ -1,0 +1,14 @@
+data:
+  path: './data/wrime-ver1.tsv'
+  emotions:
+    - 'joy'
+    - 'sadness'
+    - 'anticipation'
+    - 'surprise'
+    - 'anger'
+    - 'fear'
+    - 'disgust'
+    - 'trust'
+model:
+  pretrained_model: 'cl-tohoku/bert-base-japanese-v2'
+  dropout_prob: 0.1
