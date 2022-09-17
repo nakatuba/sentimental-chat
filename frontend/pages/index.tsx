@@ -7,7 +7,6 @@ import {
   Flex,
   HStack,
   IconButton,
-  Text,
   Textarea,
 } from '@chakra-ui/react'
 import moment from 'moment'
@@ -85,7 +84,7 @@ export default function Home(props: Props) {
                 'day'
               )) && (
               <Center>
-                <Text
+                <Box
                   px={4}
                   my={2}
                   fontWeight="bold"
@@ -94,8 +93,20 @@ export default function Home(props: Props) {
                   borderRadius="full"
                   display="inline-block"
                 >
-                  {moment(message.created_at).format('YYYY年MM月DD日')}
-                </Text>
+                  {(() => {
+                    const messageDate = moment(message.created_at)
+                    const today = moment()
+                    const yesterday = moment().subtract(1, 'days')
+
+                    if (messageDate.isSame(today, 'day')) {
+                      return '今日'
+                    } else if (messageDate.isSame(yesterday, 'day')) {
+                      return '昨日'
+                    } else {
+                      return messageDate.format('YYYY年MM月DD日')
+                    }
+                  })()}
+                </Box>
               </Center>
             )}
             <MessageBox message={message} />
@@ -142,11 +153,14 @@ export default function Home(props: Props) {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = await getToken({ req: ctx.req })
 
-  const res = await fetch('http://backend:8000/api/messages/', {
-    headers: {
-      Authorization: `Bearer ${token?.accessToken}`,
-    },
-  })
+  const res = await fetch(
+    'http://backend:8000/api/messages?ordering=created_at',
+    {
+      headers: {
+        Authorization: `Bearer ${token?.accessToken}`,
+      },
+    }
+  )
   const messages = await res.json()
 
   if (!res.ok && res.status === 401) {
