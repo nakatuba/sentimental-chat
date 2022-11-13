@@ -130,7 +130,7 @@ export default function Home(props: Props) {
           maxRows={8}
           resize="none"
           onKeyDown={e => {
-            if (e.key === 'Enter' && e.shiftKey) {
+            if (e.key === 'Enter' && e.metaKey) {
               e.preventDefault()
               sendButtonRef.current?.click()
             }
