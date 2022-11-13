@@ -1,6 +1,4 @@
-import pusher
 import requests
-from chat import settings
 from django.contrib.auth import get_user_model
 from djoser import views
 from drf_spectacular.utils import extend_schema
@@ -13,14 +11,6 @@ from .serializers import (MessageSerializer, SenderSerializer,
                           SendMessageSerializer, SetIconSerializer)
 
 User = get_user_model()
-
-pusher_client = pusher.Pusher(
-    app_id=settings.PUSHER_APP_ID,
-    key=settings.PUSHER_APP_KEY,
-    secret=settings.PUSHER_APP_SECRET,
-    cluster=settings.PUSHER_APP_CLUSTER,
-    ssl=True,
-)
 
 
 class UserViewSet(views.UserViewSet):
@@ -58,6 +48,4 @@ class MessageViewSet(viewsets.ModelViewSet):
         message = serializer.save(sender=request.user, sentiment_score=sentiment_score)
 
         serializer = self.get_serializer(message)
-        pusher_client.trigger('public-channel', 'send-event', serializer.data)
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)

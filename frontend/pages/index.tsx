@@ -15,7 +15,6 @@ import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import Pusher from 'pusher-js'
 import { useEffect, useRef, useState } from 'react'
 import { IoSend } from 'react-icons/io5'
 import TextareaAutosize from 'react-textarea-autosize'
@@ -27,23 +26,24 @@ type Props = {
 
 export default function Home(props: Props) {
   const router = useRouter()
+  const socketRef = useRef<WebSocket>()
   const bottomBoxRef = useRef<HTMLDivElement>(null)
   const sendButtonRef = useRef<HTMLButtonElement>(null)
   const { data: session } = useSession()
   const [messages, setMessages] = useState(props.messages)
-  const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY ?? '', {
-    cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
-  })
 
   useEffect(() => {
-    const channel = pusher.subscribe('public-channel')
+    socketRef.current = new WebSocket('ws://localhost:8000/ws/chat/lobby/')
 
-    channel.bind('send-event', function (data: Message) {
-      setMessages([...messages, data])
-    })
+    socketRef.current.onmessage = function (e) {
+      const data = JSON.parse(e.data)
+      setMessages(prevMessages => [...prevMessages, data.message])
+    }
 
-    return () => pusher.unsubscribe('public-channel')
-  })
+    return () => {
+      socketRef.current?.close()
+    }
+  }, [])
 
   useEffect(() => bottomBoxRef.current?.scrollIntoView(), [messages])
 
@@ -65,6 +65,10 @@ export default function Home(props: Props) {
     if (!res.ok && res.status === 401) {
       router.push('/login')
     }
+
+    const message = await res.json()
+    socketRef.current?.send(JSON.stringify({ message }))
+
     target.body.value = ''
   }
 
