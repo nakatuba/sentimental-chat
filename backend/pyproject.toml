@@ -8,6 +8,9 @@ authors = ["nakatuba <nakatuba0626@gmail.com>"]
 python = "^3.9"
 Django = "^4.1"
 Pillow = "^9.2.0"
+channels = "^4.0.0"
+channels-redis = "^4.0.0"
+daphne = "^4.0.0"
 django-cors-headers = "^3.13.0"
 django-environ = "^0.9.0"
 django-model-utils = "^4.2.0"
@@ -16,7 +19,6 @@ djoser = "^2.1.0"
 drf-spectacular = "^0.23.1"
 google-cloud-secret-manager = "^2.12.6"
 psycopg2 = "^2.9.3"
-pusher = "^3.2.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"

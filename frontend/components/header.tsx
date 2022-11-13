@@ -1,7 +1,13 @@
-import { Button, Flex, HStack } from '@chakra-ui/react'
+import type { User } from '../interfaces'
+import { Button, Flex, HStack, Text } from '@chakra-ui/react'
+import { Avatar } from '@chakra-ui/react'
 import { signOut } from 'next-auth/react'
 
-export default function Header() {
+type Props = {
+  user: User
+}
+
+export default function Header({ user }: Props) {
   return (
     <Flex
       p={4}
@@ -12,7 +18,12 @@ export default function Header() {
       bg="white"
       zIndex={2}
     >
-      <HStack />
+      <HStack spacing={4}>
+        <Avatar src={user.icon?.replace('backend', 'localhost')} />
+        <Text fontSize="xl" fontWeight="bold">
+          {user.username}
+        </Text>
+      </HStack>
       <HStack>
         <Button
           type="submit"
