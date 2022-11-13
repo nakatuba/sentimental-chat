@@ -1,6 +1,6 @@
 import Header from '../components/header'
 import MessageBox from '../components/message-box'
-import type { Message } from '../interfaces'
+import type { Message, User } from '../interfaces'
 import {
   Box,
   Center,
@@ -21,6 +21,7 @@ import { IoSend } from 'react-icons/io5'
 import TextareaAutosize from 'react-textarea-autosize'
 
 type Props = {
+  user: User
   messages: Message[]
 }
 
@@ -69,7 +70,7 @@ export default function Home(props: Props) {
 
   return (
     <Flex flexDirection="column" bg="gray.100" minH="100vh">
-      <Header />
+      <Header user={props.user} />
       <Head>
         <title>Sentimental Chat</title>
         <link rel="icon" href="/bird.png" />
@@ -171,8 +172,15 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   }
 
+  const user = await fetch('http://backend:8000/api/users/me/', {
+    headers: {
+      Authorization: `Bearer ${token?.accessToken}`,
+    },
+  }).then(res => res.json())
+
   return {
     props: {
+      user,
       messages,
     },
   }
