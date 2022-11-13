@@ -33,7 +33,7 @@ export default function Home(props: Props) {
   const [messages, setMessages] = useState(props.messages)
 
   useEffect(() => {
-    socketRef.current = new WebSocket('ws://localhost:8000/ws/chat/lobby/')
+    socketRef.current = new WebSocket('ws://localhost:8000/chat/')
 
     socketRef.current.onmessage = function (e) {
       const data = JSON.parse(e.data)
