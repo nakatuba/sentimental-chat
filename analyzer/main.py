@@ -1,6 +1,9 @@
+import io
+
 import torch
 import yaml
 from fastapi import FastAPI
+from google.cloud import storage
 from pydantic import BaseModel
 from transformers import BertJapaneseTokenizer
 
@@ -8,17 +11,20 @@ from model import BertAnalyzer
 
 app = FastAPI()
 
+storage_client = storage.Client()
+bucket = storage_client.bucket("sentimental-chat-analyzer_model")
+blob = bucket.blob("model.pt")
+data = blob.download_as_string()
+
 with open("config.yaml") as f:
     config = yaml.safe_load(f)
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = BertAnalyzer(
     pretrained_model=config["model"]["pretrained_model"],
     dropout_prob=config["model"]["dropout_prob"],
     output_dim=len(config["data"]["emotions"]),
 )
-model.load_state_dict(torch.load("./trained_models/model.pt", device))
+model.load_state_dict(torch.load(io.BytesIO(data), map_location=torch.device("cpu")))
 tokenizer = BertJapaneseTokenizer.from_pretrained(config["model"]["pretrained_model"])
 
 
