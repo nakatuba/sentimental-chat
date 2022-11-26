@@ -6,38 +6,42 @@ type Props = {
   message: Message
 }
 
-const JOY_EMOJI = String.fromCodePoint(0x1f604) // 😄
-const SADNESS_EMOJI = String.fromCodePoint(0x1f62d) // 😭
-const ANTICIPATION_EMOJI = String.fromCodePoint(0x1f913) // 🤓
-const SURPRISE_EMOJI = String.fromCodePoint(0x1f633) // 😳
-const ANGER_EMOJI = String.fromCodePoint(0x1f621) // 😡
-const FEAR_EMOJI = String.fromCodePoint(0x1f628) // 😨
-const DISGUST_EMOJI = String.fromCodePoint(0x1f616) // 😖
-const TRUST_EMOJI = String.fromCodePoint(0x1f91d) // 🤝
+const JOY = String.fromCodePoint(0x1f604) // 😄
+const SADNESS = String.fromCodePoint(0x1f62d) // 😭
+const ANTICIPATION = String.fromCodePoint(0x1f929) // 🤩
+const SURPRISE = String.fromCodePoint(0x1f633) // 😳
+const ANGER = String.fromCodePoint(0x1f621) // 😡
+const FEAR = String.fromCodePoint(0x1f628) // 😨
+const DISGUST = String.fromCodePoint(0x1f616) // 😖
+const TRUST = String.fromCodePoint(0x1f970) // 🥰
 
 export default function MessageBox({ message }: Props) {
-  const emojis: string[] = []
-  if (message.sentiment_score) {
-    if (message.sentiment_score.joy > 0.5) emojis.push(JOY_EMOJI)
-    if (message.sentiment_score.sadness > 0.5) emojis.push(SADNESS_EMOJI)
-    if (message.sentiment_score.anticipation > 0.5)
-      emojis.push(ANTICIPATION_EMOJI)
-    if (message.sentiment_score.surprise > 0.5) emojis.push(SURPRISE_EMOJI)
-    if (message.sentiment_score.anger > 0.5) emojis.push(ANGER_EMOJI)
-    if (message.sentiment_score.fear > 0.5) emojis.push(FEAR_EMOJI)
-    if (message.sentiment_score.disgust > 0.5) emojis.push(DISGUST_EMOJI)
-    if (message.sentiment_score.trust > 0.5) emojis.push(TRUST_EMOJI)
-  }
+  const emotions = [
+    { emoji: JOY, score: message.sentiment_score?.joy ?? 0 },
+    { emoji: SADNESS, score: message.sentiment_score?.sadness ?? 0 },
+    { emoji: ANTICIPATION, score: message.sentiment_score?.anticipation ?? 0 },
+    { emoji: SURPRISE, score: message.sentiment_score?.surprise ?? 0 },
+    { emoji: ANGER, score: message.sentiment_score?.anger ?? 0 },
+    { emoji: FEAR, score: message.sentiment_score?.fear ?? 0 },
+    { emoji: DISGUST, score: message.sentiment_score?.disgust ?? 0 },
+    { emoji: TRUST, score: message.sentiment_score?.trust ?? 0 },
+  ]
+  const emotion = emotions.sort((a, b) => b.score - a.score)[0]
 
   return (
     <Box p={4}>
-      <HStack alignItems="start">
-        <Avatar src={message.sender.icon?.replace('backend', 'localhost')} />
+      <HStack alignItems="start" spacing={4}>
+        <Avatar src={message.sender.icon?.replace('backend', 'localhost')}>
+          {emotion.score > 0.5 && (
+            <Text fontSize="2xl" position="absolute" top={6} left={8}>
+              {emotion.emoji}
+            </Text>
+          )}
+        </Avatar>
         <Stack>
           <HStack>
             <Text fontWeight="bold">{message.sender.username}</Text>
             <Text>{moment(message.created_at).format('HH:mm')}</Text>
-            <Text>{emojis.join(' ')}</Text>
           </HStack>
           <Text whiteSpace="pre-line">{message.body}</Text>
         </Stack>
