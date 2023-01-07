@@ -1,15 +1,16 @@
 import argparse
 import os
 
-import numpy as np
+import cloudpickle
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import wandb
 from torch.utils.data import DataLoader
 from transformers import BertJapaneseTokenizer
 
-import wandb
-from model import BertClassifier
+from model import BertAnalyzer
+from utils.collator import BertCollator
 from utils.dataset import WrimeDataset
 
 
@@ -52,6 +53,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument("--dropout-prob", default=0.1, type=float)
     parser.add_argument("--learning-rate", default=2e-5, type=float)
     parser.add_argument("--num-epochs", default=10, type=int)
+
     return parser.parse_args()
 
 
@@ -78,7 +80,7 @@ def train(
     return epoch_loss / len(dataloader)
 
 
-def main():
+def main() -> None:
     args = get_args()
 
     wandb.init(project=args.project, config=vars(args), mode=args.mode)
@@ -88,28 +90,16 @@ def main():
     train_dataset = WrimeDataset(args.wrime_tsv, args.emotions)
 
     tokenizer = BertJapaneseTokenizer.from_pretrained(args.pretrained_model)
-
-    def collate_batch(batch):
-        input_list = tokenizer(
-            [text for text, _ in batch],
-            padding=True,
-            truncation=True,
-            max_length=512,
-            return_tensors="pt",
-        )
-        label_list = torch.tensor(
-            np.array([label for _, label in batch]), dtype=torch.float
-        )
-        return input_list.to(device), label_list.to(device)
+    collator = BertCollator(tokenizer, device=device)
 
     train_dataloader = DataLoader(
         train_dataset,
         batch_size=args.batch_size,
         shuffle=True,
-        collate_fn=collate_batch,
+        collate_fn=collator,
     )
 
-    model = BertClassifier(
+    model = BertAnalyzer(
         pretrained_model=args.pretrained_model,
         dropout_prob=args.dropout_prob,
         output_dim=len(args.emotions),
@@ -121,7 +111,8 @@ def main():
         train_loss = train(model, train_dataloader, criterion, optimizer)
         print(f"Epoch {epoch + 1}/{args.num_epochs} | train | Loss: {train_loss:.4f}")
 
-    torch.save(model.state_dict(), os.path.join(wandb.run.dir, "model.pt"))
+    with open(os.path.join(wandb.run.dir, "model.pt"), mode="wb") as f:
+        cloudpickle.dump(model, f)
 
 
 if __name__ == "__main__":

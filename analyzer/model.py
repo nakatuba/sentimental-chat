@@ -1,5 +1,6 @@
+import torch
 import torch.nn as nn
-from transformers import BertModel
+from transformers import BatchEncoding, BertModel
 
 
 class BertAnalyzer(nn.Module):
@@ -11,7 +12,7 @@ class BertAnalyzer(nn.Module):
         self.dropout = nn.Dropout(dropout_prob)
         self.linear = nn.Linear(self.bert.config.hidden_size, output_dim)
 
-    def forward(self, input):
+    def forward(self, input: BatchEncoding) -> torch.Tensor:
         _, pooler_output = self.bert(**input, return_dict=False)
         output = self.dropout(pooler_output)
         output = self.linear(output)
