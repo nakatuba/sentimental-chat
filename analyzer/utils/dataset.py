@@ -1,6 +1,8 @@
 import re
-from typing import List
+from typing import List, Tuple
 
+import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from torch.utils.data import Dataset
 
@@ -21,8 +23,8 @@ class WrimeDataset(Dataset):
         text = re.sub("http[^\s]+", "", text)
         return text
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.texts)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Tuple[str, npt.NDArray[np.int64]]:
         return self.texts[index], self.labels[index]
