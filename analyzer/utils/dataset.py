@@ -8,13 +8,11 @@ from torch.utils.data import Dataset
 
 
 class WrimeDataset(Dataset):
-    def __init__(self, path: str, emotions: List[str]) -> None:
-        df = pd.read_csv(path, sep="\t")
-        df["Sentence"] = df["Sentence"].map(self._clean_tweet_text)
-        self.texts = df["Sentence"].values
+    def __init__(self, df: pd.DataFrame, emotions: List[str]) -> None:
+        self.texts = df["Sentence"].map(self._clean_tweet_text).to_numpy()
         self.labels = df[
             [f"Writer_{emotion.capitalize()}" for emotion in emotions]
-        ].values
+        ].to_numpy()
 
     def _clean_tweet_text(self, text: str) -> str:
         text = text.replace("\n", " ")
