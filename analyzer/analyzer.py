@@ -27,7 +27,7 @@ class WrimeAnalyzer:
             )
             output = self.model(input)
             output = output.squeeze()
-            output = (output - output.min()) / (output.max() - output.min())
+            output = (output / 3).clamp(min=0, max=1)
 
         return dict(zip(self.emotions, output.tolist()))
 
