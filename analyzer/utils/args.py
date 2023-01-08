@@ -50,6 +50,7 @@ def get_args() -> argparse.Namespace:
     # train
     parser.add_argument("--batch-size", default=32, type=int)
     parser.add_argument("--learning-rate", default=2e-5, type=float)
+    parser.add_argument("--patience", default=3, type=int)
     parser.add_argument("--num-epochs", default=10, type=int)
 
     # seed
