@@ -13,7 +13,7 @@ class WrimeAnalyzer:
     tokenizer: BertJapaneseTokenizer
     emotions: List[str]
 
-    def __post__init__(self) -> None:
+    def __post_init__(self) -> None:
         self.model = self.model.to("cpu")
 
     def __call__(self, text: str) -> Dict[str, float]:
