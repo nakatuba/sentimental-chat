@@ -12,6 +12,7 @@ def get_args() -> argparse.Namespace:
 
     # data
     parser.add_argument("--wrime-tsv", default="./data/wrime-ver1.tsv", type=str)
+    parser.add_argument("--validation-size", default=0.20, type=float)
 
     # label
     parser.add_argument(
