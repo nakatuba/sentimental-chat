@@ -3,7 +3,7 @@ import torch.nn as nn
 from transformers import BatchEncoding, BertModel
 
 
-class BertAnalyzer(nn.Module):
+class WrimeBert(nn.Module):
     def __init__(
         self, pretrained_model: str, dropout_prob: float, output_dim: int
     ) -> None:

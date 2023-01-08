@@ -9,7 +9,8 @@ import wandb
 from torch.utils.data import DataLoader
 from transformers import BertJapaneseTokenizer
 
-from model import BertAnalyzer
+from analyzer import WrimeAnalyzer
+from model import WrimeBert
 from utils.collator import BertCollator
 from utils.dataset import WrimeDataset
 
@@ -99,7 +100,7 @@ def main() -> None:
         collate_fn=collator,
     )
 
-    model = BertAnalyzer(
+    model = WrimeBert(
         pretrained_model=args.pretrained_model,
         dropout_prob=args.dropout_prob,
         output_dim=len(args.emotions),
@@ -111,8 +112,10 @@ def main() -> None:
         train_loss = train(model, train_dataloader, criterion, optimizer)
         print(f"Epoch {epoch + 1}/{args.num_epochs} | train | Loss: {train_loss:.4f}")
 
-    with open(os.path.join(wandb.run.dir, "model.pt"), mode="wb") as f:
-        cloudpickle.dump(model, f)
+    analyzer = WrimeAnalyzer(model, tokenizer, args.emotions)
+
+    with open(os.path.join(wandb.run.dir, "analyzer.pkl"), mode="wb") as f:
+        cloudpickle.dump(analyzer, f)
 
 
 if __name__ == "__main__":
