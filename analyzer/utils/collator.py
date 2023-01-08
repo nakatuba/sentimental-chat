@@ -8,7 +8,7 @@ from transformers import BatchEncoding, BertJapaneseTokenizer
 
 
 @dataclass
-class BertCollator:
+class WrimeCollator:
     tokenizer: BertJapaneseTokenizer
     device: torch.device
 

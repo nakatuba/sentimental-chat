@@ -11,8 +11,9 @@ from transformers import BertJapaneseTokenizer
 from analyzer import WrimeAnalyzer
 from model import WrimeBert
 from utils.args import get_args
-from utils.collator import BertCollator
+from utils.collator import WrimeCollator
 from utils.dataset import WrimeDataset
+from utils.seed import fix_seed
 
 
 def train(
@@ -45,10 +46,12 @@ def main() -> None:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    fix_seed(args.seed)
+
     train_dataset = WrimeDataset(args.wrime_tsv, args.emotions)
 
     tokenizer = BertJapaneseTokenizer.from_pretrained(args.pretrained_model)
-    collator = BertCollator(tokenizer, device=device)
+    collator = WrimeCollator(tokenizer, device=device)
 
     train_dataloader = DataLoader(
         train_dataset,
