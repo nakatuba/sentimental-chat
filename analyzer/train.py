@@ -1,6 +1,5 @@
 import os
 
-import cloudpickle
 import pandas as pd
 import torch
 import torch.nn as nn
@@ -107,9 +106,7 @@ def main() -> None:
             break
 
     analyzer = WrimeAnalyzer(model, tokenizer, args.emotions)
-
-    with open(os.path.join(wandb.run.dir, "analyzer.pkl"), mode="wb") as f:
-        cloudpickle.dump(analyzer, f)
+    analyzer.save(os.path.join(wandb.run.dir, "analyzer.pkl"))
 
 
 if __name__ == "__main__":

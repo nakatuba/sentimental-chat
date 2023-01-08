@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
+import cloudpickle
 import torch
 from transformers import BertJapaneseTokenizer
 
@@ -12,9 +13,6 @@ class WrimeAnalyzer:
     model: WrimeBert
     tokenizer: BertJapaneseTokenizer
     emotions: List[str]
-
-    def __post_init__(self) -> None:
-        self.model = self.model.to("cpu")
 
     def __call__(self, text: str) -> Dict[str, float]:
         self.model.eval()
@@ -32,3 +30,9 @@ class WrimeAnalyzer:
             output = (output - output.min()) / (output.max() - output.min())
 
         return dict(zip(self.emotions, output.tolist()))
+
+    def save(self, path: str) -> None:
+        self.model = self.model.to("cpu")
+
+        with open(path, mode="wb") as f:
+            cloudpickle.dump(self, f)
