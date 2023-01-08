@@ -13,7 +13,7 @@ fugashi = "^1.2.0"
 google-cloud-storage = "^2.6.0"
 pandas = "^1.5.1"
 scikit-learn = "^1.2.0"
-torch = { url = "https://download.pytorch.org/whl/cu116/torch-1.13.1%2Bcu116-cp39-cp39-linux_x86_64.whl" }
+torch = "~1.12.1"
 transformers = "^4.25.0"
 unidic-lite = "^1.0.8"
 uvicorn = "^0.18.3"
@@ -25,6 +25,9 @@ flake8 = "^5.0.4"
 black = "^22.8.0"
 isort = "^5.10.1"
 pandas-stubs = "^1.5.2.230105"
+
+[tool.isort]
+known_third_party = ["wandb"]
 
 [build-system]
 requires = ["poetry-core"]
