@@ -6,16 +6,10 @@ from .models import Message, SentimentScore
 User = get_user_model()
 
 
-class SenderSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'icon']
-
-
-class SetIconSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['icon']
 
 
 class SentimentScoreSerializer(serializers.ModelSerializer):
@@ -34,7 +28,7 @@ class SentimentScoreSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = SenderSerializer()
+    sender = UserSerializer()
     sentiment_score = SentimentScoreSerializer()
 
     class Meta:

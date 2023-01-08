@@ -7,25 +7,15 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Message, SentimentScore
-from .serializers import (MessageSerializer, SenderSerializer,
-                          SendMessageSerializer, SetIconSerializer)
+from .serializers import (MessageSerializer, SendMessageSerializer,
+                          UserSerializer)
 
 User = get_user_model()
 
 
 class UserViewSet(views.UserViewSet):
     queryset = User.objects.all()
-    serializer_class = SenderSerializer
-
-    @extend_schema(request=SetIconSerializer, responses={204: None})
-    @action(detail=False, methods=['post'])
-    def set_icon(self, request):
-        serializer = SetIconSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = request.user
-        user.icon = serializer.validated_data['icon']
-        user.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    serializer_class = UserSerializer
 
 
 class MessageViewSet(viewsets.ModelViewSet):
