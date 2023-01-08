@@ -18,6 +18,7 @@ class WrimeAnalyzer:
 
     def __call__(self, text: str) -> Dict[str, float]:
         self.model.eval()
+
         with torch.no_grad():
             input = self.tokenizer(
                 text,
