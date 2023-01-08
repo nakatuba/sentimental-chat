@@ -52,7 +52,7 @@ export default function Home(props: Props) {
     const target = event.target as typeof event.target & {
       body: { value: string }
     }
-    const res = await fetch('http://localhost:8000/api/messages/send/', {
+    const res = await fetch('http://localhost:8000/api/messages/', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,

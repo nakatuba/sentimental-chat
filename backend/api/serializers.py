@@ -36,7 +36,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ['id', 'created_at', 'sender', 'body', 'sentiment_score']
 
 
-class SendMessageSerializer(serializers.ModelSerializer):
+class CreateMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['body']
