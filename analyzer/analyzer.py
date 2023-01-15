@@ -4,13 +4,13 @@ from typing import Dict, List
 import cloudpickle
 import torch
 import torch.nn as nn
-from transformers import BertJapaneseTokenizer
+from transformers import AutoTokenizer
 
 
 @dataclass
 class WrimeAnalyzer:
     model: nn.Module
-    tokenizer: BertJapaneseTokenizer
+    tokenizer: AutoTokenizer
     emotions: List[str]
 
     def __call__(self, text: str) -> Dict[str, float]:

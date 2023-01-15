@@ -7,7 +7,7 @@ import torch.optim as optim
 import wandb
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
-from transformers import BertJapaneseTokenizer
+from transformers import AutoTokenizer
 
 from analyzer import WrimeAnalyzer
 from model import WrimeBert
@@ -71,7 +71,7 @@ def main() -> None:
     train_dataset = WrimeDataset(train_df, emotions=args.emotions)
     valid_dataset = WrimeDataset(valid_df, emotions=args.emotions)
 
-    tokenizer = BertJapaneseTokenizer.from_pretrained(args.pretrained_model)
+    tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
     collator = WrimeCollator(tokenizer, device=device)
 
     train_dataloader = DataLoader(
