@@ -1,4 +1,7 @@
+import copy
 from typing import Literal
+
+import torch.nn as nn
 
 
 class EarlyStopping:
@@ -11,14 +14,16 @@ class EarlyStopping:
         elif mode == "max":
             self.is_better = lambda a, best: a > best
 
-    def step(self, metric: float) -> bool:
+    def __call__(self, metric: float, model: nn.Module) -> bool:
         if self.best is None:
             self.best = metric
+            self.best_model = copy.deepcopy(model)
             return False
 
         if self.is_better(metric, self.best):
             self.num_bad_epochs = 0
             self.best = metric
+            self.best_model = copy.deepcopy(model)
         else:
             self.num_bad_epochs += 1
 

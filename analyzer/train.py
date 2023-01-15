@@ -94,7 +94,7 @@ def main() -> None:
     ).to(device)
     criterion = nn.MSELoss().to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
-    es = EarlyStopping(patience=args.patience)
+    early_stopping = EarlyStopping(patience=args.patience)
 
     for epoch in range(args.num_epochs):
         train_loss = train(model, train_dataloader, criterion, optimizer)
@@ -102,10 +102,10 @@ def main() -> None:
         print(
             f"Epoch {epoch + 1}/{args.num_epochs} | train | Loss: {train_loss:.4f} | valid | Loss: {valid_loss:.4f}"
         )
-        if es.step(valid_loss):
+        if early_stopping(valid_loss, model):
             break
 
-    analyzer = WrimeAnalyzer(model, tokenizer, args.emotions)
+    analyzer = WrimeAnalyzer(early_stopping.best_model, tokenizer, args.emotions)
     analyzer.save(os.path.join(wandb.run.dir, "analyzer.pkl"))
 
 
