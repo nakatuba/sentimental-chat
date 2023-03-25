@@ -3,15 +3,14 @@ from typing import Dict, List
 
 import cloudpickle
 import torch
-from transformers import BertJapaneseTokenizer
-
-from model import WrimeBert
+import torch.nn as nn
+from transformers import AutoTokenizer
 
 
 @dataclass
 class WrimeAnalyzer:
-    model: WrimeBert
-    tokenizer: BertJapaneseTokenizer
+    model: nn.Module
+    tokenizer: AutoTokenizer
     emotions: List[str]
 
     def __call__(self, text: str) -> Dict[str, float]:
@@ -32,7 +31,7 @@ class WrimeAnalyzer:
         return dict(zip(self.emotions, output.tolist()))
 
     def save(self, path: str) -> None:
-        self.model = self.model.to("cpu")
+        self.model.to("cpu")
 
         with open(path, mode="wb") as f:
             cloudpickle.dump(self, f)

@@ -4,12 +4,12 @@ from typing import List, Tuple
 import numpy as np
 import numpy.typing as npt
 import torch
-from transformers import BatchEncoding, BertJapaneseTokenizer
+from transformers import AutoTokenizer, BatchEncoding
 
 
 @dataclass
 class WrimeCollator:
-    tokenizer: BertJapaneseTokenizer
+    tokenizer: AutoTokenizer
     device: torch.device
 
     def __call__(
