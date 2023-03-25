@@ -1419,26 +1419,6 @@ files = [
 typing-extensions = "*"
 
 [[package]]
-name = "torch"
-version = "1.13.0+cu116"
-description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
-category = "main"
-optional = false
-python-versions = ">=3.7.0"
-files = [
-    {file = "torch-1.13.0%2Bcu116-cp39-cp39-linux_x86_64.whl", hash = "sha256:129d95249fe20ccd83d156323a5e2a6aba83e18841a00ac724e270ad806dd493"},
-]
-
-[package.dependencies]
-typing-extensions = "*"
-
-[package.extras]
-opt-einsum = ["opt-einsum (>=3.3)"]
-
-[package.source]
-type = "url"
-url = "https://download.pytorch.org/whl/cu116/torch-1.13.0%2Bcu116-cp39-cp39-linux_x86_64.whl"
-[[package]]
 name = "tqdm"
 version = "4.64.1"
 description = "Fast, Extensible Progress Meter"
@@ -1615,9 +1595,9 @@ GitPython = ">=1.0.0"
 pathtools = "*"
 promise = ">=2.0,<3"
 protobuf = [
-    {version = ">=3.19.0,<4.21.0 || >4.21.0,<5", markers = "python_version > \"3.9\" or sys_platform != \"linux\""},
     {version = ">=3.12.0,<4.21.0 || >4.21.0,<5", markers = "python_version < \"3.9\" and sys_platform == \"linux\""},
     {version = ">=3.15.0,<4.21.0 || >4.21.0,<5", markers = "python_version == \"3.9\" and sys_platform == \"linux\""},
+    {version = ">=3.19.0,<4.21.0 || >4.21.0,<5", markers = "python_version > \"3.9\" or sys_platform != \"linux\""},
 ]
 psutil = ">=5.0.0"
 PyYAML = "*"
@@ -1641,4 +1621,4 @@ sweeps = ["sweeps (>=0.2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "18e670923b9a76f514556b6f583848a603b982484ada0214678b578b212e120a"
+content-hash = "104ed80257c1adcca4a72d2da29128d1b2e01c0910b7f4c655a2953734b9746b"
