@@ -16,6 +16,10 @@ steps:
       - 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA'
       - '--region'
       - 'asia-northeast1'
+      - '--port'
+      - '9000'
+      - '--memory'
+      - '1Gi'
 
 images:
   - 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA'
