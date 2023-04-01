@@ -4,7 +4,7 @@ steps:
     dir: 'analyzer'
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/analyzer']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -13,13 +13,9 @@ steps:
       - 'deploy'
       - 'analyzer'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/analyzer'
       - '--region'
       - 'asia-northeast1'
-      - '--port'
-      - '9000'
-      - '--memory'
-      - '1Gi'
 
 images:
   - 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA'
