@@ -1,17 +1,10 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA'
-      - 'analyzer'
-      - '-f'
-      - 'analyzer/Dockerfile'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA', '.']
+    dir: 'analyzer'
 
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA'
+    args: ['push', 'gcr.io/$PROJECT_ID/analyzer:$COMMIT_SHA']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
