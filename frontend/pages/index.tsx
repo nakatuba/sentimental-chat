@@ -33,7 +33,9 @@ export default function Home(props: Props) {
   const [messages, setMessages] = useState(props.messages)
 
   useEffect(() => {
-    socketRef.current = new WebSocket('ws://localhost:8000/chat/')
+    socketRef.current = new WebSocket(
+      `${process.env.NEXT_PUBLIC_BACKEND_WS_HOST}/chat/`
+    )
 
     socketRef.current.onmessage = function (e) {
       const data = JSON.parse(e.data)
@@ -158,7 +160,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = await getToken({ req: ctx.req })
 
   const res = await fetch(
-    'http://backend:8000/api/messages?ordering=created_at',
+    `${process.env.BACKEND_HOST}/api/messages?ordering=created_at`,
     {
       headers: {
         Authorization: `Bearer ${token?.accessToken}`,

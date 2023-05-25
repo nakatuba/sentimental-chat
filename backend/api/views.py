@@ -1,4 +1,5 @@
 import requests
+from chat import settings
 from django.contrib.auth import get_user_model
 from djoser import views
 from drf_spectacular.utils import extend_schema
@@ -28,7 +29,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer = CreateMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         res = requests.post(
-            'http://analyzer:9000/analyze',
+            f'{settings.ANALYZER_HOST}/analyze',
             json={'body': serializer.validated_data['body']},
         )
         sentiment_score = SentimentScore(**res.json())
