@@ -15,6 +15,22 @@ resource "google_secret_manager_secret" "django_settings" {
   }
 }
 
+resource "google_sql_database_instance" "instance" {
+  name             = "sentimental-chat-instance"
+  database_version = "POSTGRES_14"
+  region           = "us-central1"
+  settings {
+    availability_type = "ZONAL"
+    tier              = "db-f1-micro"
+    disk_type         = "PD_HDD"
+    disk_size         = 10
+    disk_autoresize   = true
+    backup_configuration {
+      enabled = false
+    }
+  }
+}
+
 module "analyzer_cd" {
   source = "./modules/cd"
 
