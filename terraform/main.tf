@@ -51,7 +51,7 @@ module "analyzer" {
   port         = 9000
   limits = {
     cpu    = "1000m"
-    memory = "1Gi"
+    memory = "2Gi"
   }
 }
 
