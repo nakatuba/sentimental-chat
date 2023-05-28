@@ -6,19 +6,6 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/backend"]
 
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: gcloud
-    args:
-      [
-        "run",
-        "deploy",
-        "backend",
-        "--image",
-        "gcr.io/$PROJECT_ID/backend",
-        "--region",
-        "asia-northeast1",
-      ]
-
   - name: "gcr.io/google-appengine/exec-wrapper"
     args:
       [
@@ -32,6 +19,19 @@ steps:
         "python",
         "manage.py",
         "migrate",
+      ]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "backend",
+        "--image",
+        "gcr.io/$PROJECT_ID/backend",
+        "--region",
+        "asia-northeast1",
       ]
 
 images:
