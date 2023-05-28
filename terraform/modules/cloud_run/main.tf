@@ -14,5 +14,8 @@ resource "google_cloud_run_service" "service" {
         }
       }
     }
+    metadata {
+      annotations = var.template_annotations
+    }
   }
 }

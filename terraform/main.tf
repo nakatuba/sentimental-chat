@@ -61,5 +61,7 @@ module "backend" {
   project_id   = var.project_id
   service_name = "backend"
   port         = 8000
-  limits       = {}
+  template_annotations = {
+    "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.instance.connection_name
+  }
 }
