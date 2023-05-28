@@ -42,3 +42,24 @@ module "backend_cd" {
 
   service_name = "backend"
 }
+
+module "analyzer" {
+  source = "./modules/cloud_run"
+
+  project_id   = var.project_id
+  service_name = "analyzer"
+  port         = 9000
+  limits = {
+    cpu    = "1000m"
+    memory = "1Gi"
+  }
+}
+
+module "backend" {
+  source = "./modules/cloud_run"
+
+  project_id   = var.project_id
+  service_name = "backend"
+  port         = 8000
+  limits       = {}
+}
