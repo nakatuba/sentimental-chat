@@ -31,7 +31,7 @@ DEBUG=True
 ANALYZER_HOST=http://analyzer:9000
 ```
 
-## Run server
+## Run Server
 
 ```
 docker-compose up -d
