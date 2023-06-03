@@ -34,7 +34,10 @@ export default function Home(props: Props) {
 
   useEffect(() => {
     socketRef.current = new WebSocket(
-      `${process.env.NEXT_PUBLIC_BACKEND_WS_HOST}/chat/`
+      `${process.env.NEXT_PUBLIC_BACKEND_HOST?.replace(
+        /^http(s)?\:\/\//,
+        'ws$1://'
+      )}/chat/`
     )
 
     socketRef.current.onmessage = function (e) {
@@ -54,16 +57,19 @@ export default function Home(props: Props) {
     const target = event.target as typeof event.target & {
       body: { value: string }
     }
-    const res = await fetch('http://localhost:8000/api/messages/', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${session?.accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        body: target.body.value,
-      }),
-    })
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/messages/`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          body: target.body.value,
+        }),
+      }
+    )
     if (!res.ok && res.status === 401) {
       router.push('/login')
     }
@@ -178,7 +184,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   }
 
-  const user = await fetch('http://backend:8000/api/users/me/', {
+  const user = await fetch(`${process.env.BACKEND_HOST}/api/users/me/`, {
     headers: {
       Authorization: `Bearer ${token?.accessToken}`,
     },

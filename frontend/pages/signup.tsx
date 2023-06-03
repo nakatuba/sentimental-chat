@@ -49,10 +49,13 @@ export default function Signup() {
     formData.append('username', target.username.value)
     formData.append('password', target.password.value)
 
-    const res = await fetch('http://localhost:8000/api/users/', {
-      method: 'POST',
-      body: formData,
-    })
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/users/`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    )
     if (!res.ok) {
       const errorMessage = await res.json()
       errorMessage.username && setUsernameErrorMessages(errorMessage.username)
