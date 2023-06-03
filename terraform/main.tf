@@ -55,7 +55,7 @@ module "backend_cd" {
 }
 
 module "analyzer" {
-  source = "./modules/cloud_run"
+  source = "./modules/cloud-run"
 
   project_id   = var.project_id
   service_name = "analyzer"
@@ -67,7 +67,7 @@ module "analyzer" {
 }
 
 module "backend" {
-  source = "./modules/cloud_run"
+  source = "./modules/cloud-run"
 
   project_id   = var.project_id
   service_name = "backend"
