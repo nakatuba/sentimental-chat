@@ -27,3 +27,12 @@ resource "google_cloud_run_service" "service" {
     ]
   }
 }
+
+resource "google_cloud_run_service_iam_binding" "binding" {
+  location = google_cloud_run_service.service.location
+  service  = google_cloud_run_service.service.name
+  role     = "roles/run.invoker"
+  members = [
+    "allUsers"
+  ]
+}

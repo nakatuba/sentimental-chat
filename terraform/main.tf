@@ -78,21 +78,3 @@ module "backend" {
     "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
   }
 }
-
-resource "google_cloud_run_service_iam_binding" "backend_iam_binding" {
-  location = module.backend.location
-  service  = module.backend.service_name
-  role     = "roles/run.invoker"
-  members = [
-    "allUsers"
-  ]
-}
-
-resource "google_cloud_run_service_iam_binding" "analyzer_iam_binding" {
-  location = module.analyzer.location
-  service  = module.analyzer.service_name
-  role     = "roles/run.invoker"
-  members = [
-    "allUsers"
-  ]
-}
