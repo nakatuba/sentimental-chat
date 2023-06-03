@@ -31,6 +31,17 @@ resource "google_sql_database_instance" "database" {
   }
 }
 
+resource "google_redis_instance" "redis" {
+  name           = "sentimental-chat-redis"
+  memory_size_gb = 1
+}
+
+resource "google_vpc_access_connector" "connector" {
+  name          = "vpc-access-connector"
+  ip_cidr_range = "10.8.0.0/28"
+  network       = "default"
+}
+
 module "analyzer_cd" {
   source = "./modules/cd"
 
@@ -62,7 +73,9 @@ module "backend" {
   service_name = "backend"
   port         = 8000
   template_annotations = {
-    "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.database.connection_name
+    "run.googleapis.com/cloudsql-instances"   = google_sql_database_instance.database.connection_name
+    "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.name
+    "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
   }
 }
 
