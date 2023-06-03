@@ -1,6 +1,7 @@
 resource "google_cloud_run_service" "service" {
-  name     = var.service_name
-  location = "asia-northeast1"
+  name                       = var.service_name
+  location                   = "asia-northeast1"
+  autogenerate_revision_name = true
 
   template {
     spec {
