@@ -16,6 +16,8 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
       - analyzer
       - db

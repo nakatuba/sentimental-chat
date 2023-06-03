@@ -2,8 +2,12 @@ data "google_project" "project" {
 }
 
 resource "google_project_iam_member" "default_compute_sa_iam" {
+  for_each = toset([
+    "roles/secretmanager.secretAccessor"
+  ])
+
   project = var.project_id
-  role    = "roles/secretmanager.secretAccessor"
+  role    = each.value
   member  = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
 

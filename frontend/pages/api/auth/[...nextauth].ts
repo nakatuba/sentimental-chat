@@ -3,7 +3,7 @@ import type { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 async function verifyAccessToken(token: JWT) {
-  const res = await fetch('http://backend:8000/api/auth/jwt/verify/', {
+  const res = await fetch(`${process.env.BACKEND_HOST}/api/auth/jwt/verify/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refresh: token.accessToken }),
@@ -13,7 +13,7 @@ async function verifyAccessToken(token: JWT) {
 }
 
 async function refreshAccessToken(token: JWT) {
-  const res = await fetch('http://backend:8000/api/auth/jwt/refresh/', {
+  const res = await fetch(`${process.env.BACKEND_HOST}/api/auth/jwt/refresh/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refresh: token.refreshToken }),
@@ -34,11 +34,14 @@ export default NextAuth({
         password: { type: 'password' },
       },
       async authorize(credentials) {
-        const res = await fetch('http://backend:8000/api/auth/jwt/create/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(credentials),
-        })
+        const res = await fetch(
+          `${process.env.BACKEND_HOST}/api/auth/jwt/create/`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
+          }
+        )
         const user = await res.json()
 
         if (res.ok && user) {
