@@ -18,7 +18,6 @@ resource "google_secret_manager_secret" "django_settings" {
 resource "google_sql_database_instance" "database" {
   name             = "sentimental-chat-database"
   database_version = "POSTGRES_14"
-  region           = "us-central1"
   settings {
     availability_type = "ZONAL"
     tier              = "db-f1-micro"
