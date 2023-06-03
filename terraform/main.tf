@@ -15,8 +15,8 @@ resource "google_secret_manager_secret" "django_settings" {
   }
 }
 
-resource "google_sql_database_instance" "instance" {
-  name             = "sentimental-chat-instance"
+resource "google_sql_database_instance" "database" {
+  name             = "sentimental-chat-database"
   database_version = "POSTGRES_14"
   region           = "us-central1"
   settings {
@@ -62,7 +62,7 @@ module "backend" {
   service_name = "backend"
   port         = 8000
   template_annotations = {
-    "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.instance.connection_name
+    "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.database.connection_name
   }
 }
 
