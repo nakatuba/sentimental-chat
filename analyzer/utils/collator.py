@@ -1,15 +1,17 @@
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 import numpy.typing as npt
 import torch
 from transformers import AutoTokenizer, BatchEncoding
 
+from utils.tokenizer import HottoSnsBertTokenizer
+
 
 @dataclass
 class WrimeCollator:
-    tokenizer: AutoTokenizer
+    tokenizer: Union[AutoTokenizer, HottoSnsBertTokenizer]
     device: torch.device
 
     def __call__(

@@ -1,16 +1,18 @@
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import cloudpickle
 import torch
 import torch.nn as nn
 from transformers import AutoTokenizer
 
+from utils.tokenizer import HottoSnsBertTokenizer
+
 
 @dataclass
 class WrimeAnalyzer:
     model: nn.Module
-    tokenizer: AutoTokenizer
+    tokenizer: Union[AutoTokenizer, HottoSnsBertTokenizer]
     emotions: List[str]
 
     def __call__(self, text: str) -> Dict[str, float]:
