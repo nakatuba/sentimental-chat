@@ -12,7 +12,6 @@ def get_args() -> argparse.Namespace:
 
     # data
     parser.add_argument("--wrime-tsv", default="./data/wrime-ver1.tsv", type=str)
-    parser.add_argument("--validation-size", default=0.20, type=float)
 
     # label
     parser.add_argument(
@@ -42,15 +41,12 @@ def get_args() -> argparse.Namespace:
     )
 
     # model
-    parser.add_argument(
-        "--pretrained-model", default="cl-tohoku/bert-base-japanese-v2", type=str
-    )
+    parser.add_argument("--pretrained-model", default="hottoSNS-bert", type=str)
     parser.add_argument("--dropout-prob", default=0.1, type=float)
 
     # train
     parser.add_argument("--batch-size", default=32, type=int)
     parser.add_argument("--learning-rate", default=2e-5, type=float)
-    parser.add_argument("--patience", default=3, type=int)
     parser.add_argument("--num-epochs", default=10, type=int)
 
     # seed

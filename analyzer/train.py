@@ -14,6 +14,7 @@ from utils.args import get_args
 from utils.collator import WrimeCollator
 from utils.dataset import WrimeDataset
 from utils.seed import fix_seed
+from utils.tokenizer import HottoSnsBertTokenizer
 
 
 def train(
@@ -51,7 +52,11 @@ def main() -> None:
 
     train_dataset = WrimeDataset(df, emotions=args.emotions)
 
-    tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
+    if args.pretrained_model == "hottoSNS-bert":
+        tokenizer = HottoSnsBertTokenizer()
+    else:
+        tokenizer = AutoTokenizer.from_pretrained(args.pretrained_model)
+
     collator = WrimeCollator(tokenizer, device=device)
 
     train_dataloader = DataLoader(
