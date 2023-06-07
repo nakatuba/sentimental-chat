@@ -19,7 +19,7 @@ export default function Header({ user }: Props) {
       zIndex={2}
     >
       <HStack spacing={4}>
-        <Avatar src={user.icon?.replace('backend', 'localhost')} />
+        <Avatar src={user.icon} />
         <Text fontSize="xl" fontWeight="bold">
           {user.username}
         </Text>
