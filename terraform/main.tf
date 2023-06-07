@@ -1,10 +1,15 @@
-resource "google_storage_bucket" "tfstate" {
-  name     = "sentimental-chat-tfstate"
+resource "google_storage_bucket" "analyzer" {
+  name     = "sentimental-chat-analyzer"
   location = "ASIA-NORTHEAST1"
 }
 
-resource "google_storage_bucket" "analyzer" {
-  name     = "sentimental-chat-analyzer"
+resource "google_storage_bucket" "backend" {
+  name     = "sentimental-chat-backend"
+  location = "ASIA-NORTHEAST1"
+}
+
+resource "google_storage_bucket" "tfstate" {
+  name     = "sentimental-chat-tfstate"
   location = "ASIA-NORTHEAST1"
 }
 
