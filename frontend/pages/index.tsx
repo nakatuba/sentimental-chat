@@ -13,7 +13,6 @@ import moment from 'moment'
 import type { GetServerSidePropsContext } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { IoSend } from 'react-icons/io5'
@@ -83,10 +82,6 @@ export default function Home(props: Props) {
   return (
     <Flex flexDirection="column" bg="gray.100" minH="100vh">
       <Header user={props.user} />
-      <Head>
-        <title>Sentimental Chat</title>
-        <link rel="icon" href="/bird.png" />
-      </Head>
       <Box flexGrow={1}>
         {messages.map((message, index) => (
           <Box key={message.id}>
