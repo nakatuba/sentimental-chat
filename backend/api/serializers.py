@@ -12,12 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'icon']
 
 
-class RoomSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Room
-        fields = ['id', 'name']
-
-
 class SentimentScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = SentimentScore
@@ -46,3 +40,11 @@ class CreateMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['room', 'body']
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    messages = MessageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Room
+        fields = ['id', 'name', 'messages']
