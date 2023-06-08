@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import Message, SentimentScore
+from .models import Message, Room, SentimentScore
 
 User = get_user_model()
 
@@ -10,6 +10,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'icon']
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['id', 'name']
 
 
 class SentimentScoreSerializer(serializers.ModelSerializer):
@@ -39,4 +45,4 @@ class MessageSerializer(serializers.ModelSerializer):
 class CreateMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['body']
+        fields = ['room', 'body']

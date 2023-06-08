@@ -12,6 +12,10 @@ class User(AbstractUser, UUIDModel):
     REQUIRED_FIELDS = ['icon']
 
 
+class Room(UUIDModel):
+    name = models.CharField(max_length=150, unique=True)
+
+
 class SentimentScore(UUIDModel):
     joy = models.FloatField()
     sadness = models.FloatField()
@@ -26,6 +30,7 @@ class SentimentScore(UUIDModel):
 class Message(UUIDModel):
     created_at = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     body = models.TextField()
     sentiment_score = models.OneToOneField(
         SentimentScore, on_delete=models.CASCADE, null=True, blank=True

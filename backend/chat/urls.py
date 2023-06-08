@@ -1,4 +1,4 @@
-from api.views import MessageViewSet, UserViewSet
+from api.views import MessageViewSet, RoomViewSet, UserViewSet
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
@@ -10,6 +10,7 @@ from . import settings
 
 router = DefaultRouter()
 router.register('users', UserViewSet)
+router.register('rooms', RoomViewSet)
 router.register('messages', MessageViewSet)
 
 urlpatterns = [

@@ -6,9 +6,9 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import filters, status, viewsets
 from rest_framework.response import Response
 
-from .models import Message, SentimentScore
+from .models import Message, Room, SentimentScore
 from .serializers import (CreateMessageSerializer, MessageSerializer,
-                          UserSerializer)
+                          RoomSerializer, UserSerializer)
 
 User = get_user_model()
 
@@ -16,6 +16,11 @@ User = get_user_model()
 class UserViewSet(views.UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class RoomViewSet(viewsets.ModelViewSet):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
 
 
 class MessageViewSet(viewsets.ModelViewSet):
