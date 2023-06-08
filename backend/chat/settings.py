@@ -185,5 +185,6 @@ SPECTACULAR_SETTINGS = {
 GS_BUCKET_NAME = env('GS_BUCKET_NAME', default=None)
 if GS_BUCKET_NAME:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_DEFAULT_ACL = "publicRead"
 
 ANALYZER_HOST = env('ANALYZER_HOST')
