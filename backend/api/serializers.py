@@ -11,12 +11,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'icon']
 
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        if ret['icon'] is not None:
-            ret['icon'] = ret['icon'].replace('http://backend', 'http://localhost')
-        return ret
-
 
 class SentimentScoreSerializer(serializers.ModelSerializer):
     class Meta:
