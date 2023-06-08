@@ -31,7 +31,12 @@ export default function MessageBox({ message }: Props) {
   return (
     <Box p={4}>
       <HStack alignItems="start" spacing={4}>
-        <Avatar src={message.sender.icon?.replace('backend', 'localhost')}>
+        <Avatar
+          src={message.sender.icon?.replace(
+            'http://backend',
+            'http://localhost'
+          )}
+        >
           {emotion.score > 0.5 && (
             <Text fontSize="2xl" position="absolute" top={6} left={8}>
               {emotion.emoji}

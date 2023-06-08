@@ -18,6 +18,7 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - GOOGLE_APPLICATION_CREDENTIALS=/backend/credentials.json
     depends_on:
       - analyzer
       - db

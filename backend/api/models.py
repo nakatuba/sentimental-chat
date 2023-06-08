@@ -3,8 +3,12 @@ from django.db import models
 from model_utils.models import UUIDModel
 
 
+def user_icon_path(instance, filename):
+    return f'user/{instance.id}/icon/{filename}'
+
+
 class User(AbstractUser, UUIDModel):
-    icon = models.ImageField(blank=True)
+    icon = models.ImageField(upload_to=user_icon_path, blank=True)
     REQUIRED_FIELDS = ['icon']
 
 
