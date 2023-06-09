@@ -2,7 +2,7 @@ import { Avatar, Box, HStack, Stack, Text } from '@chakra-ui/react'
 import type { Message } from 'interfaces'
 import moment from 'moment'
 
-type Props = {
+type MessageBoxProps = {
   message: Message
 }
 
@@ -15,7 +15,7 @@ const FEAR = String.fromCodePoint(0x1f628) // 😨
 const DISGUST = String.fromCodePoint(0x1f616) // 😖
 const TRUST = String.fromCodePoint(0x1f970) // 🥰
 
-export default function MessageBox({ message }: Props) {
+export function MessageBox({ message }: MessageBoxProps) {
   const emotions = [
     { emoji: JOY, score: message.sentiment_score?.joy ?? 0 },
     { emoji: SADNESS, score: message.sentiment_score?.sadness ?? 0 },
