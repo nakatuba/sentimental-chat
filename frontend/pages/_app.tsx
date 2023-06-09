@@ -11,7 +11,11 @@ moment.tz.setDefault('Asia/Tokyo')
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <ChakraProvider>
-      <SessionProvider session={session} refetchInterval={5 * 60}>
+      <SessionProvider
+        session={session}
+        refetchInterval={5 * 60}
+        refetchOnWindowFocus={true}
+      >
         <Head>
           <title>Sentimental Chat</title>
           <link rel="icon" href="/bird.png" />
