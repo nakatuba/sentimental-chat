@@ -1,6 +1,6 @@
 import type { Room, User } from '../interfaces'
 import { BlueButton } from './button'
-import { Button, Flex, HStack, Text } from '@chakra-ui/react'
+import { Flex, HStack, Text } from '@chakra-ui/react'
 import { Avatar } from '@chakra-ui/react'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
@@ -31,15 +31,7 @@ type UserHeaderProps = {
 
 export function UserHeader({ user }: UserHeaderProps) {
   return (
-    <Flex
-      p={4}
-      alignItems="center"
-      justifyContent="space-between"
-      position="sticky"
-      top={0}
-      bg="white"
-      zIndex={2}
-    >
+    <Header>
       <HStack spacing={4}>
         <Avatar
           src={user.icon?.replace('http://backend', 'http://localhost')}
@@ -49,17 +41,11 @@ export function UserHeader({ user }: UserHeaderProps) {
         </Text>
       </HStack>
       <HStack>
-        <Button
-          type="submit"
-          bg="blue.400"
-          color="white"
-          _hover={{ bg: 'blue.500' }}
-          onClick={() => signOut({ callbackUrl: '/login' })}
-        >
+        <BlueButton onClick={() => signOut({ callbackUrl: '/login' })}>
           Sign out
-        </Button>
+        </BlueButton>
       </HStack>
-    </Flex>
+    </Header>
   )
 }
 
