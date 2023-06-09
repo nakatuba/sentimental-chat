@@ -20,13 +20,6 @@ class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(owner=request.user)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()

@@ -43,3 +43,7 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['id', 'owner', 'name', 'messages']
+
+    def save(self, **kwargs):
+        owner = self.context['request'].user
+        return super().save(owner=owner, **kwargs)
