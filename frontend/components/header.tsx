@@ -1,7 +1,7 @@
-import type { Room, User } from '../interfaces'
-import { BlueButton } from './button'
 import { Flex, HStack, Text } from '@chakra-ui/react'
 import { Avatar } from '@chakra-ui/react'
+import { BlueButton } from 'components/button'
+import type { Room, User } from 'interfaces'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
 

@@ -1,5 +1,5 @@
-import type { Message } from '../interfaces'
 import { Avatar, Box, HStack, Stack, Text } from '@chakra-ui/react'
+import type { Message } from 'interfaces'
 import moment from 'moment'
 
 type Props = {

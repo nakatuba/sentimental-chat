@@ -1,4 +1,3 @@
-import AuthForm from '../components/auth-form'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import {
   Avatar,
@@ -13,6 +12,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
+import AuthForm from 'components/auth-form'
 import { signIn } from 'next-auth/react'
 import { useRef, useState } from 'react'
 

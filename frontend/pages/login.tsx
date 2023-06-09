@@ -1,4 +1,3 @@
-import AuthForm from '../components/auth-form'
 import {
   Alert,
   AlertIcon,
@@ -10,6 +9,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
+import AuthForm from 'components/auth-form'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
