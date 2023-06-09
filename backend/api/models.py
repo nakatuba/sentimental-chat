@@ -13,7 +13,7 @@ class User(AbstractUser, UUIDModel):
 
 
 class Room(UUIDModel):
-    name = models.CharField(max_length=150, unique=True)
+    pass
 
 
 class SentimentScore(UUIDModel):

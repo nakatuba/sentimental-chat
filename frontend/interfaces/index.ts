@@ -4,6 +4,11 @@ export type User = {
   icon: string | null
 }
 
+export type Room = {
+  id: number
+  messages: Message[]
+}
+
 export type SentimentScore = {
   joy: number
   sadness: number
