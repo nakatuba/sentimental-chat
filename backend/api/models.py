@@ -13,6 +13,7 @@ class User(AbstractUser, UUIDModel):
 
 
 class Room(UUIDModel):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
 
 
