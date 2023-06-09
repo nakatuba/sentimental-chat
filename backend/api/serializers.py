@@ -28,18 +28,12 @@ class SentimentScoreSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = UserSerializer()
-    sentiment_score = SentimentScoreSerializer()
+    sender = UserSerializer(read_only=True)
+    sentiment_score = SentimentScoreSerializer(read_only=True)
 
     class Meta:
         model = Message
         fields = ['id', 'created_at', 'sender', 'body', 'sentiment_score']
-
-
-class CreateMessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Message
-        fields = ['room', 'body']
 
 
 class RoomSerializer(serializers.ModelSerializer):
