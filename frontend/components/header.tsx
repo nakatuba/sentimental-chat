@@ -60,7 +60,7 @@ export function RoomHeader({ room }: RoomHeaderProps) {
     <Header>
       <HStack>
         <Text fontSize="xl" fontWeight="bold">
-          {room.id}
+          {room.name}
         </Text>
       </HStack>
       <HStack>

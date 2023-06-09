@@ -6,6 +6,7 @@ export type User = {
 
 export type Room = {
   id: number
+  name: string
   messages: Message[]
 }
 

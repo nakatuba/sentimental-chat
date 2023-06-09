@@ -4,7 +4,7 @@ from model_utils.models import UUIDModel
 
 
 def user_icon_path(instance, filename):
-    return f'user/{instance.id}/icon/{filename}'
+    return f'users/{instance.id}/icons/{filename}'
 
 
 class User(AbstractUser, UUIDModel):
@@ -13,7 +13,7 @@ class User(AbstractUser, UUIDModel):
 
 
 class Room(UUIDModel):
-    pass
+    name = models.CharField(max_length=150)
 
 
 class SentimentScore(UUIDModel):
