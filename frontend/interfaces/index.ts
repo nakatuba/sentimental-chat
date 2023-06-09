@@ -1,11 +1,11 @@
 export type User = {
-  id: number
+  id: string
   username: string
   icon: string | null
 }
 
 export type Room = {
-  id: number
+  id: string
   name: string
   messages: Message[]
 }
@@ -22,7 +22,7 @@ export type SentimentScore = {
 }
 
 export type Message = {
-  id: number
+  id: string
   created_at: string
   sender: User
   body: string
