@@ -12,7 +12,8 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import AuthForm from 'components/auth-form'
+import { BlueButton } from 'components/button'
+import { FormBox, FormFlex } from 'components/form'
 import { signIn } from 'next-auth/react'
 import { useRef, useState } from 'react'
 
@@ -71,81 +72,72 @@ export default function Signup() {
   }
 
   return (
-    <AuthForm
-      below={
-        <Text>
-          すでにアカウントをお持ちの方は{' '}
-          <Link color="blue.400" href="/login">
-            ログイン
-          </Link>
-        </Text>
-      }
-      onSubmit={signup}
-    >
-      <Stack spacing={4}>
-        <Stack spacing={4} px={24}>
-          <Avatar
-            src={image && URL.createObjectURL(image)}
-            size="2xl"
-            mx="auto"
-          />
-          <Input
-            type="file"
-            accept="image/*"
-            ref={inputRef}
-            style={{ display: 'none' }}
-            onChange={uploadImage}
-          />
-          <Button onClick={() => inputRef.current?.click()}>
-            画像をアップロード
-          </Button>
-          <Button color="blue.400" variant="link" onClick={deleteImage}>
-            画像を削除
-          </Button>
+    <FormFlex>
+      <FormBox onSubmit={signup}>
+        <Stack spacing={4}>
+          <Stack spacing={4} px={24}>
+            <Avatar
+              src={image && URL.createObjectURL(image)}
+              size="2xl"
+              mx="auto"
+            />
+            <Input
+              type="file"
+              accept="image/*"
+              ref={inputRef}
+              style={{ display: 'none' }}
+              onChange={uploadImage}
+            />
+            <Button onClick={() => inputRef.current?.click()}>
+              画像をアップロード
+            </Button>
+            <Button color="blue.400" variant="link" onClick={deleteImage}>
+              画像を削除
+            </Button>
+          </Stack>
+          <FormControl
+            id="username"
+            isRequired
+            isInvalid={usernameErrorMessages.length > 0}
+            onChange={() => setUsernameErrorMessages([])}
+          >
+            <FormLabel>Username</FormLabel>
+            <Input type="text" />
+            {usernameErrorMessages.map((errorMessage, index) => (
+              <FormErrorMessage key={index}>{errorMessage}</FormErrorMessage>
+            ))}
+          </FormControl>
+          <FormControl
+            id="password"
+            isRequired
+            isInvalid={passwordErrorMessages.length > 0}
+            onChange={() => setPasswordErrorMessages([])}
+          >
+            <FormLabel>Password</FormLabel>
+            <InputGroup>
+              <Input type={showPassword ? 'text' : 'password'} />
+              <InputRightElement>
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            {passwordErrorMessages.map((errorMessage, index) => (
+              <FormErrorMessage key={index}>{errorMessage}</FormErrorMessage>
+            ))}
+          </FormControl>
         </Stack>
-        <FormControl
-          id="username"
-          isRequired
-          isInvalid={usernameErrorMessages.length > 0}
-          onChange={() => setUsernameErrorMessages([])}
-        >
-          <FormLabel>Username</FormLabel>
-          <Input type="text" />
-          {usernameErrorMessages.map((errorMessage, index) => (
-            <FormErrorMessage key={index}>{errorMessage}</FormErrorMessage>
-          ))}
-        </FormControl>
-        <FormControl
-          id="password"
-          isRequired
-          isInvalid={passwordErrorMessages.length > 0}
-          onChange={() => setPasswordErrorMessages([])}
-        >
-          <FormLabel>Password</FormLabel>
-          <InputGroup>
-            <Input type={showPassword ? 'text' : 'password'} />
-            <InputRightElement>
-              <Button
-                variant="ghost"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          {passwordErrorMessages.map((errorMessage, index) => (
-            <FormErrorMessage key={index}>{errorMessage}</FormErrorMessage>
-          ))}
-        </FormControl>
-      </Stack>
-      <Button
-        type="submit"
-        bg="blue.400"
-        color="white"
-        _hover={{ bg: 'blue.500' }}
-      >
-        Sign up
-      </Button>
-    </AuthForm>
+        <BlueButton type="submit">Sign up</BlueButton>
+      </FormBox>
+      <Text>
+        すでにアカウントをお持ちの方は{' '}
+        <Link color="blue.400" href="/login">
+          ログイン
+        </Link>
+      </Text>
+    </FormFlex>
   )
 }

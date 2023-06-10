@@ -1,15 +1,11 @@
-import { Flex, HStack, Text } from '@chakra-ui/react'
+import { Flex, FlexProps, HStack, Text } from '@chakra-ui/react'
 import { Avatar } from '@chakra-ui/react'
 import { BlueButton } from 'components/button'
 import type { Room, User } from 'interfaces'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
-type HeaderProps = {
-  children?: React.ReactNode
-}
-
-export function Header({ children }: HeaderProps) {
+export function Header({ children, ...props }: FlexProps) {
   return (
     <Flex
       p={4}
@@ -19,6 +15,7 @@ export function Header({ children }: HeaderProps) {
       w="100%"
       zIndex={2}
       bg="white"
+      {...props}
     >
       {children}
     </Flex>

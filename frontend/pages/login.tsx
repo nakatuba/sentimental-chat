@@ -1,7 +1,6 @@
 import {
   Alert,
   AlertIcon,
-  Button,
   FormControl,
   FormLabel,
   Input,
@@ -9,7 +8,8 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import AuthForm from 'components/auth-form'
+import { BlueButton } from 'components/button'
+import { FormBox, FormFlex } from 'components/form'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -38,47 +38,38 @@ export default function Login() {
   }
 
   return (
-    <AuthForm
-      below={
-        <Text>
-          アカウントをお持ちでない方は{' '}
-          <Link color="blue.400" href="/signup">
-            新規登録
-          </Link>
-        </Text>
-      }
-      onSubmit={login}
-    >
-      <Stack spacing={4}>
-        {showUnauthrizedError && (
-          <Alert status="error">
-            <AlertIcon />
-            ユーザー名またはパスワードが正しくありません
-          </Alert>
-        )}
-        <FormControl
-          id="username"
-          onChange={() => setShowUnauthrizedError(false)}
-        >
-          <FormLabel>Username</FormLabel>
-          <Input type="text" />
-        </FormControl>
-        <FormControl
-          id="password"
-          onChange={() => setShowUnauthrizedError(false)}
-        >
-          <FormLabel>Password</FormLabel>
-          <Input type="password" />
-        </FormControl>
-      </Stack>
-      <Button
-        type="submit"
-        bg="blue.400"
-        color="white"
-        _hover={{ bg: 'blue.500' }}
-      >
-        Sign in
-      </Button>
-    </AuthForm>
+    <FormFlex>
+      <FormBox onSubmit={login}>
+        <Stack spacing={4}>
+          {showUnauthrizedError && (
+            <Alert status="error">
+              <AlertIcon />
+              ユーザー名またはパスワードが正しくありません
+            </Alert>
+          )}
+          <FormControl
+            id="username"
+            onChange={() => setShowUnauthrizedError(false)}
+          >
+            <FormLabel>Username</FormLabel>
+            <Input type="text" />
+          </FormControl>
+          <FormControl
+            id="password"
+            onChange={() => setShowUnauthrizedError(false)}
+          >
+            <FormLabel>Password</FormLabel>
+            <Input type="password" />
+          </FormControl>
+        </Stack>
+        <BlueButton type="submit">Sign in</BlueButton>
+      </FormBox>
+      <Text>
+        アカウントをお持ちでない方は{' '}
+        <Link color="blue.400" href="/signup">
+          新規登録
+        </Link>
+      </Text>
+    </FormFlex>
   )
 }

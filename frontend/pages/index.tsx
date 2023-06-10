@@ -1,5 +1,6 @@
-import { Box, Flex, FormControl, Input, Stack } from '@chakra-ui/react'
+import { FormControl, Input } from '@chakra-ui/react'
 import { BlueButton } from 'components/button'
+import { FormBox, FormFlex } from 'components/form'
 import { UserHeader } from 'components/header'
 import type { User } from 'interfaces'
 import type { GetServerSidePropsContext } from 'next'
@@ -51,23 +52,14 @@ export default function Home(props: Props) {
   return (
     <>
       <UserHeader user={props.user} />
-      <Flex
-        minH="100vh"
-        alignItems="center"
-        justify="center"
-        direction="column"
-        gap={8}
-        bg="gray.100"
-      >
-        <Box rounded="lg" bg="white" boxShadow="lg" width="lg" p={8}>
-          <Stack as="form" spacing={8} onSubmit={createRoom}>
-            <FormControl id="name">
-              <Input type="text" placeholder="Room Name" isRequired />
-            </FormControl>
-            <BlueButton type="submit">新しい Room を作成</BlueButton>
-          </Stack>
-        </Box>
-      </Flex>
+      <FormFlex>
+        <FormBox onSubmit={createRoom}>
+          <FormControl id="name">
+            <Input type="text" placeholder="Room Name" isRequired />
+          </FormControl>
+          <BlueButton type="submit">新しい Room を作成</BlueButton>
+        </FormBox>
+      </FormFlex>
     </>
   )
 }
