@@ -1,11 +1,14 @@
 import { Flex, FlexProps, HStack, Text } from '@chakra-ui/react'
 import { Avatar } from '@chakra-ui/react'
 import { BlueButton } from 'components/button'
-import type { Room, User } from 'interfaces'
+import type { User } from 'interfaces'
 import { signOut } from 'next-auth/react'
-import { useRouter } from 'next/router'
 
-export function Header({ children, ...props }: FlexProps) {
+type UserHeaderProps = FlexProps & {
+  user: User
+}
+
+export function UserHeader({ user, children, ...props }: UserHeaderProps) {
   return (
     <Flex
       p={4}
@@ -17,19 +20,7 @@ export function Header({ children, ...props }: FlexProps) {
       bg="white"
       {...props}
     >
-      {children}
-    </Flex>
-  )
-}
-
-type UserHeaderProps = {
-  user: User
-}
-
-export function UserHeader({ user }: UserHeaderProps) {
-  return (
-    <Header>
-      <HStack spacing={4}>
+      <HStack flex={1} spacing={4}>
         <Avatar
           src={user.icon?.replace('http://backend', 'http://localhost')}
         />
@@ -37,32 +28,12 @@ export function UserHeader({ user }: UserHeaderProps) {
           {user.username}
         </Text>
       </HStack>
-      <HStack>
+      {children}
+      <HStack flex={1} justifyContent="flex-end">
         <BlueButton onClick={() => signOut({ callbackUrl: '/login' })}>
           Sign out
         </BlueButton>
       </HStack>
-    </Header>
-  )
-}
-
-type RoomHeaderProps = {
-  room: Room
-}
-
-export function RoomHeader({ room }: RoomHeaderProps) {
-  const router = useRouter()
-
-  return (
-    <Header>
-      <HStack>
-        <Text fontSize="xl" fontWeight="bold">
-          {room.name}
-        </Text>
-      </HStack>
-      <HStack>
-        <BlueButton onClick={() => router.push('/')}>退出する</BlueButton>
-      </HStack>
-    </Header>
+    </Flex>
   )
 }

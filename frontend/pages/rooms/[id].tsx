@@ -1,8 +1,9 @@
-import { RoomHeader } from 'components/header'
+import { UserHeader } from 'components/header'
 import { MessageBox } from 'components/message-box'
 import type { Room } from 'interfaces'
 import {
   Box,
+  Text,
   Center,
   Flex,
   HStack,
@@ -17,6 +18,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { IoSend } from 'react-icons/io5'
 import TextareaAutosize from 'react-textarea-autosize'
+import { IoChevronBack } from 'react-icons/io5'
 
 type Props = {
   room: Room
@@ -86,9 +88,26 @@ export default function Room(props: Props) {
 
   return (
     <>
-      <RoomHeader room={props.room} />
+      {session && (
+        <UserHeader user={session.user}>
+          <HStack position="relative">
+            <IconButton
+              aria-label="Exit room"
+              icon={<IoChevronBack size={32} />}
+              bg="white"
+              color="blue.400"
+              position="absolute"
+              left={-10}
+              onClick={() => router.push('/')}
+            />
+            <Text fontSize="xl" fontWeight="bold">
+              {props.room.name}
+            </Text>
+          </HStack>
+        </UserHeader>
+      )}
       <Flex flexDirection="column" pt={24} minH="100vh" bg="gray.100">
-        <Box flexGrow={1}>
+        <Box flex={1}>
           {messages.map((message, index) => (
             <Box key={message.id}>
               {(index === 0 ||
