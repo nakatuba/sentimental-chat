@@ -60,6 +60,7 @@ export default function Signup() {
         body: formData,
       }
     )
+
     if (!res.ok) {
       const errorMessage = await res.json()
       errorMessage.username && setUsernameErrorMessages(errorMessage.username)

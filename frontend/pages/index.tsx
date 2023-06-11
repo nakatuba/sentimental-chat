@@ -43,6 +43,7 @@ export default function Home(props: Props) {
     }
 
     const room = await res.json()
+
     router.push({
       pathname: '/rooms/[id]',
       query: { id: room.id },
@@ -83,6 +84,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   const user = await res.json()
+
   return {
     props: {
       user,

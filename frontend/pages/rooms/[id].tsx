@@ -78,6 +78,7 @@ export default function Room(props: Props) {
     }
 
     const message = await res.json()
+
     socketRef.current?.send(JSON.stringify({ message }))
 
     target.body.value = ''
@@ -156,7 +157,7 @@ export default function Room(props: Props) {
             color="white"
             _hover={{ bg: 'blue.500' }}
             ref={sendButtonRef}
-          ></IconButton>
+          />
         </HStack>
       </Flex>
     </>
@@ -185,6 +186,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   const room = await res.json()
+
   return {
     props: {
       room,
