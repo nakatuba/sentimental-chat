@@ -1,4 +1,4 @@
-import { Box, Flex, FlexProps, Stack } from '@chakra-ui/react'
+import { Box, BoxProps, Flex, FlexProps, Stack } from '@chakra-ui/react'
 
 export function FormFlex({ children, ...props }: FlexProps) {
   return (
@@ -16,17 +16,18 @@ export function FormFlex({ children, ...props }: FlexProps) {
   )
 }
 
-type FormBoxProps = {
-  children?: React.ReactNode
-  onSubmit?: React.FormEventHandler
-}
-
-export function FormBox({ children, onSubmit }: FormBoxProps) {
+export function FormBox({ children, ...props }: BoxProps) {
   return (
-    <Box rounded="lg" bg="white" boxShadow="lg" width="lg" p={8}>
-      <Stack as="form" spacing={8} onSubmit={onSubmit}>
-        {children}
-      </Stack>
+    <Box
+      as="form"
+      rounded="lg"
+      bg="white"
+      boxShadow="lg"
+      width="lg"
+      p={8}
+      {...props}
+    >
+      <Stack spacing={8}>{children}</Stack>
     </Box>
   )
 }

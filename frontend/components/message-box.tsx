@@ -1,8 +1,8 @@
-import { Avatar, Box, HStack, Stack, Text } from '@chakra-ui/react'
+import { Avatar, Box, BoxProps, HStack, Stack, Text } from '@chakra-ui/react'
 import type { Message } from 'interfaces'
 import moment from 'moment'
 
-type MessageBoxProps = {
+type MessageBoxProps = BoxProps & {
   message: Message
 }
 
@@ -15,7 +15,7 @@ const FEAR = String.fromCodePoint(0x1f628) // 😨
 const DISGUST = String.fromCodePoint(0x1f616) // 😖
 const TRUST = String.fromCodePoint(0x1f970) // 🥰
 
-export function MessageBox({ message }: MessageBoxProps) {
+export function MessageBox({ message, ...props }: MessageBoxProps) {
   const emotions = [
     { emoji: JOY, score: message.sentiment_score?.joy ?? 0 },
     { emoji: SADNESS, score: message.sentiment_score?.sadness ?? 0 },
@@ -29,7 +29,7 @@ export function MessageBox({ message }: MessageBoxProps) {
   const emotion = emotions.sort((a, b) => b.score - a.score)[0]
 
   return (
-    <Box p={4}>
+    <Box p={4} {...props}>
       <HStack alignItems="start" spacing={4}>
         <Avatar
           src={message.sender.icon?.replace(
