@@ -33,7 +33,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id', 'created_at', 'sender', 'body', 'sentiment_score']
+        fields = ['id', 'created_at', 'sender', 'room', 'body', 'sentiment_score']
 
 
 class RoomSerializer(serializers.ModelSerializer):
