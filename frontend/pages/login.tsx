@@ -11,6 +11,7 @@ import {
 import { BlueButton } from 'components/button'
 import { FormBox, FormFlex } from 'components/form'
 import { signIn } from 'next-auth/react'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
@@ -30,7 +31,7 @@ export default function Login() {
       password: target.password.value,
     }).then(res => {
       if (res?.ok) {
-        router.push('/')
+        router.push((router.query.callbackUrl as string) ?? '/')
       } else {
         setShowUnauthrizedError(true)
       }
@@ -66,9 +67,9 @@ export default function Login() {
       </FormBox>
       <Text>
         アカウントをお持ちでない方は{' '}
-        <Link color="blue.400" href="/signup">
-          新規登録
-        </Link>
+        <NextLink href={{ pathname: '/signup', query: router.query }}>
+          <Link color="blue.400">新規登録</Link>
+        </NextLink>
       </Text>
     </FormFlex>
   )
