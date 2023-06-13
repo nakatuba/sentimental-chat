@@ -2,10 +2,17 @@ import { FormControl, Input } from '@chakra-ui/react'
 import { BlueButton } from 'components/button'
 import { FormBox, FormFlex } from 'components/form'
 import { UserHeader } from 'components/header'
+import type { User } from 'interfaces'
+import type { GetServerSidePropsContext } from 'next'
+import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 
-export default function Home() {
+type Props = {
+  user: User
+}
+
+export default function Home(props: Props) {
   const router = useRouter()
   const { data: session } = useSession()
 
@@ -45,7 +52,7 @@ export default function Home() {
 
   return (
     <>
-      {session && <UserHeader user={session.user} />}
+      <UserHeader user={props.user} />
       <FormFlex>
         <FormBox onSubmit={createRoom}>
           <FormControl id="name">
@@ -56,4 +63,31 @@ export default function Home() {
       </FormFlex>
     </>
   )
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const token = await getToken({ req: ctx.req })
+
+  const res = await fetch(`${process.env.BACKEND_HOST}/api/users/me/`, {
+    headers: {
+      Authorization: `Bearer ${token?.accessToken}`,
+    },
+  })
+
+  if (!res.ok) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    }
+  }
+
+  const user = await res.json()
+
+  return {
+    props: {
+      user,
+    },
+  }
 }

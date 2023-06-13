@@ -70,16 +70,6 @@ export default NextAuth({
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken
-
-      const res = await fetch(`${process.env.BACKEND_HOST}/api/users/me/`, {
-        headers: {
-          Authorization: `Bearer ${token.accessToken}`,
-        },
-      })
-      if (res.ok) {
-        session.user = await res.json()
-      }
-
       return session
     },
   },
