@@ -1,24 +1,41 @@
-import type { User } from '../interfaces'
-import { Button, Flex, HStack, Text } from '@chakra-ui/react'
+import {
+  Button,
+  Flex,
+  FlexProps,
+  HStack,
+  Text,
+  useToast,
+} from '@chakra-ui/react'
 import { Avatar } from '@chakra-ui/react'
+import { BlueButton } from 'components/button'
 import { signOut } from 'next-auth/react'
+import type { User } from 'types'
 
-type Props = {
+type UserHeaderProps = FlexProps & {
   user: User
+  showCopyLinkButton?: boolean
 }
 
-export default function Header({ user }: Props) {
+export function UserHeader({
+  user,
+  showCopyLinkButton,
+  children,
+  ...props
+}: UserHeaderProps) {
+  const toast = useToast()
+
   return (
     <Flex
       p={4}
       alignItems="center"
       justifyContent="space-between"
-      position="sticky"
-      top={0}
-      bg="white"
+      position="fixed"
+      w="100%"
       zIndex={2}
+      bg="white"
+      {...props}
     >
-      <HStack spacing={4}>
+      <HStack flex={1} spacing={4}>
         <Avatar
           src={user.icon?.replace('http://backend', 'http://localhost')}
         />
@@ -26,16 +43,25 @@ export default function Header({ user }: Props) {
           {user.username}
         </Text>
       </HStack>
-      <HStack>
-        <Button
-          type="submit"
-          bg="blue.400"
-          color="white"
-          _hover={{ bg: 'blue.500' }}
-          onClick={() => signOut({ callbackUrl: '/login' })}
-        >
+      {children}
+      <HStack flex={1} justifyContent="flex-end" spacing={4}>
+        {showCopyLinkButton && (
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href).then(() => {
+                toast({
+                  title: 'Copied link to clipboard',
+                  status: 'success',
+                })
+              })
+            }}
+          >
+            共有リンクをコピー
+          </Button>
+        )}
+        <BlueButton onClick={() => signOut({ callbackUrl: '/login' })}>
           Sign out
-        </Button>
+        </BlueButton>
       </HStack>
     </Flex>
   )
