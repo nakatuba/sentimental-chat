@@ -1,6 +1,6 @@
 import { UserHeader } from 'components/header'
 import { MessageBox } from 'components/message-box'
-import type { User, Room } from 'interfaces'
+import type { User, Room } from 'types'
 import {
   Box,
   Text,

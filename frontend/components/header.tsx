@@ -1,8 +1,8 @@
 import { Flex, FlexProps, HStack, Text } from '@chakra-ui/react'
 import { Avatar } from '@chakra-ui/react'
 import { BlueButton } from 'components/button'
-import type { User } from 'interfaces'
 import { signOut } from 'next-auth/react'
+import type { User } from 'types'
 
 type UserHeaderProps = FlexProps & {
   user: User

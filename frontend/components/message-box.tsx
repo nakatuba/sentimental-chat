@@ -1,6 +1,6 @@
 import { Avatar, Box, BoxProps, HStack, Stack, Text } from '@chakra-ui/react'
-import type { Message } from 'interfaces'
 import moment from 'moment'
+import type { Message } from 'types'
 
 type MessageBoxProps = BoxProps & {
   message: Message

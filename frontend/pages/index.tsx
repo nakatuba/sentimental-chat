@@ -11,12 +11,12 @@ import {
 import { BlueButton } from 'components/button'
 import { FormBox, FormFlex } from 'components/form'
 import { UserHeader } from 'components/header'
-import type { User } from 'interfaces'
 import type { GetServerSidePropsContext } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import type { User } from 'types'
 
 type Props = {
   user: User
