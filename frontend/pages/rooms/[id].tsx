@@ -1,6 +1,6 @@
 import { UserHeader } from 'components/header'
 import { MessageBox } from 'components/message-box'
-import type { Room } from 'interfaces'
+import type { User, Room } from 'interfaces'
 import {
   Box,
   Text,
@@ -21,6 +21,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import { IoChevronBack } from 'react-icons/io5'
 
 type Props = {
+  user: User
   room: Room
 }
 
@@ -88,24 +89,22 @@ export default function Room(props: Props) {
 
   return (
     <>
-      {session && (
-        <UserHeader user={session.user}>
-          <HStack position="relative">
-            <IconButton
-              aria-label="Exit room"
-              icon={<IoChevronBack size={32} />}
-              bg="white"
-              color="blue.400"
-              position="absolute"
-              left={-10}
-              onClick={() => router.push('/')}
-            />
-            <Text fontSize="xl" fontWeight="bold">
-              {props.room.name}
-            </Text>
-          </HStack>
-        </UserHeader>
-      )}
+      <UserHeader user={props.user}>
+        <HStack position="relative">
+          <IconButton
+            aria-label="Exit room"
+            icon={<IoChevronBack size={32} />}
+            bg="white"
+            color="blue.400"
+            position="absolute"
+            left={-12}
+            onClick={() => router.push('/')}
+          />
+          <Text fontSize="xl" fontWeight="bold">
+            {props.room.name}
+          </Text>
+        </HStack>
+      </UserHeader>
       <Flex flexDirection="column" pt={24} minH="100vh" bg="gray.100">
         <Box flex={1}>
           {messages.map((message, index) => (
@@ -186,16 +185,39 @@ export default function Room(props: Props) {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = await getToken({ req: ctx.req })
 
-  const res = await fetch(
-    `${process.env.BACKEND_HOST}/api/rooms/${ctx.query.id}`,
+  const user = await fetch(`${process.env.BACKEND_HOST}/api/users/me/`, {
+    headers: {
+      Authorization: `Bearer ${token?.accessToken}`,
+    },
+  }).then(res => {
+    if (res.ok) {
+      return res.json()
+    }
+  })
+
+  if (!user) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    }
+  }
+
+  const room = await fetch(
+    `${process.env.BACKEND_HOST}/api/rooms/${ctx.query.id}/`,
     {
       headers: {
         Authorization: `Bearer ${token?.accessToken}`,
       },
     }
-  )
+  ).then(res => {
+    if (res.ok) {
+      return res.json()
+    }
+  })
 
-  if (!res.ok) {
+  if (!room) {
     return {
       redirect: {
         destination: '/',
@@ -204,10 +226,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   }
 
-  const room = await res.json()
-
   return {
     props: {
+      user,
       room,
     },
   }

@@ -1,4 +1,13 @@
-import { FormControl, Input } from '@chakra-ui/react'
+import {
+  AbsoluteCenter,
+  Box,
+  Divider,
+  FormControl,
+  Heading,
+  Input,
+  Link,
+  Stack,
+} from '@chakra-ui/react'
 import { BlueButton } from 'components/button'
 import { FormBox, FormFlex } from 'components/form'
 import { UserHeader } from 'components/header'
@@ -6,6 +15,7 @@ import type { User } from 'interfaces'
 import type { GetServerSidePropsContext } from 'next'
 import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 
 type Props = {
@@ -55,6 +65,29 @@ export default function Home(props: Props) {
       <UserHeader user={props.user} />
       <FormFlex>
         <FormBox onSubmit={createRoom}>
+          {props.user.rooms.length > 0 && (
+            <>
+              <Heading size="lg">Your Rooms</Heading>
+              <Stack alignItems="center">
+                {props.user.rooms.map(room => (
+                  <NextLink
+                    key={room.id}
+                    href={{ pathname: '/rooms/[id]', query: { id: room.id } }}
+                  >
+                    <Link fontSize="xl" color="blue.400">
+                      {room.name}
+                    </Link>
+                  </NextLink>
+                ))}
+              </Stack>
+              <Box position="relative" py={4}>
+                <Divider />
+                <AbsoluteCenter bg="white" px={4}>
+                  or
+                </AbsoluteCenter>
+              </Box>
+            </>
+          )}
           <FormControl id="name">
             <Input type="text" placeholder="Room Name" isRequired />
           </FormControl>

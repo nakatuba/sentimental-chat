@@ -13,7 +13,8 @@ class User(AbstractUser, UUIDModel):
 
 
 class Room(UUIDModel):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rooms')
     name = models.CharField(max_length=150)
 
 

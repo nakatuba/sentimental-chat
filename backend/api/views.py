@@ -19,6 +19,8 @@ class UserViewSet(views.UserViewSet):
 class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at']
 
 
 class MessageViewSet(viewsets.ModelViewSet):

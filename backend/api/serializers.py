@@ -7,9 +7,32 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    rooms = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'icon']
+        fields = ['id', 'username', 'icon', 'rooms']
+
+    def get_rooms(self, obj):
+        rooms = obj.rooms.order_by('created_at')
+        return rooms.values('id', 'created_at', 'name')
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    messages = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Room
+        fields = ['id', 'created_at', 'owner', 'name', 'messages']
+
+    def save(self, **kwargs):
+        owner = self.context['request'].user
+        return super().save(owner=owner, **kwargs)
+
+    def get_messages(self, obj):
+        messages = obj.messages.order_by('created_at')
+        return MessageSerializer(messages, many=True, context=self.context).data
 
 
 class SentimentScoreSerializer(serializers.ModelSerializer):
@@ -34,16 +57,3 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['id', 'created_at', 'sender', 'room', 'body', 'sentiment_score']
-
-
-class RoomSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    messages = MessageSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Room
-        fields = ['id', 'owner', 'name', 'messages']
-
-    def save(self, **kwargs):
-        owner = self.context['request'].user
-        return super().save(owner=owner, **kwargs)

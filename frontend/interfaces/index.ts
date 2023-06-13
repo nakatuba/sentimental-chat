@@ -2,6 +2,10 @@ export type User = {
   id: string
   username: string
   icon: string | null
+  rooms: {
+    id: string
+    name: string
+  }[]
 }
 
 export type Room = {
