@@ -89,7 +89,7 @@ export default function Room(props: Props) {
 
   return (
     <>
-      <UserHeader user={props.user}>
+      <UserHeader user={props.user} showCopyLinkButton>
         <HStack position="relative">
           <IconButton
             aria-label="Exit room"
