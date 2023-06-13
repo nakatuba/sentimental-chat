@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'icon', 'rooms']
+        fields = '__all__'
 
     def get_rooms(self, obj):
         rooms = obj.rooms.order_by('created_at')
@@ -24,7 +24,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ['id', 'created_at', 'owner', 'name', 'messages']
+        fields = '__all__'
 
     def save(self, **kwargs):
         owner = self.context['request'].user
@@ -38,16 +38,7 @@ class RoomSerializer(serializers.ModelSerializer):
 class SentimentScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = SentimentScore
-        fields = [
-            'joy',
-            'sadness',
-            'anticipation',
-            'surprise',
-            'anger',
-            'fear',
-            'disgust',
-            'trust',
-        ]
+        fields = '__all__'
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -56,4 +47,4 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id', 'created_at', 'sender', 'room', 'body', 'sentiment_score']
+        fields = '__all__'
