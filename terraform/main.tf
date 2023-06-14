@@ -78,7 +78,7 @@ module "backend" {
   port         = 8000
   template_annotations = {
     "run.googleapis.com/cloudsql-instances"   = google_sql_database_instance.database.connection_name
-    "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.name
-    "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
+    "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.id
+    "run.googleapis.com/vpc-access-egress"    = "all-traffic"
   }
 }
