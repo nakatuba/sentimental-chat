@@ -4,8 +4,8 @@ export function FormFlex({ children, ...props }: FlexProps) {
   return (
     <Flex
       minH="100vh"
+      justifyContent="center"
       alignItems="center"
-      justify="center"
       direction="column"
       gap={8}
       bg="gray.100"
