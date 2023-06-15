@@ -68,6 +68,9 @@ module "analyzer" {
     cpu    = "1000m"
     memory = "2Gi"
   }
+  template_annotations = {
+    "autoscaling.knative.dev/minScale" = 1
+  }
 }
 
 module "backend" {
@@ -77,6 +80,7 @@ module "backend" {
   service_name = "backend"
   port         = 8000
   template_annotations = {
+    "autoscaling.knative.dev/minScale"        = 1
     "run.googleapis.com/cloudsql-instances"   = google_sql_database_instance.database.connection_name
     "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.connector.id
     "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
