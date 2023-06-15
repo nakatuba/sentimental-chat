@@ -37,7 +37,7 @@ export function MessageBox({ message, ...props }: MessageBoxProps) {
             'http://localhost'
           )}
         >
-          {emotion.score > 0.5 && (
+          {emotion.score > 0 && (
             <Text fontSize="2xl" position="absolute" top={6} left={8}>
               {emotion.emoji}
             </Text>
