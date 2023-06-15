@@ -26,7 +26,7 @@ export default function Login() {
       username: { value: string }
       password: { value: string }
     }
-    signIn('credentials', {
+    await signIn('credentials', {
       redirect: false,
       username: target.username.value,
       password: target.password.value,
@@ -42,9 +42,10 @@ export default function Login() {
   return (
     <FormFlex>
       <FormBox
-        onSubmit={event => {
+        onSubmit={async event => {
           setIsLoadingSubmitButton(true)
-          login(event).finally(() => setIsLoadingSubmitButton(false))
+          await login(event)
+          setIsLoadingSubmitButton(false)
         }}
       >
         <Stack spacing={4}>

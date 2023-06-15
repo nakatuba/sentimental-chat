@@ -67,9 +67,10 @@ export default function Home(props: Props) {
       <UserHeader user={props.user} />
       <FormFlex>
         <FormBox
-          onSubmit={event => {
+          onSubmit={async event => {
             setIsLoadingSubmitButton(true)
-            createRoom(event).finally(() => setIsLoadingSubmitButton(false))
+            await createRoom(event)
+            setIsLoadingSubmitButton(false)
           }}
         >
           {props.user.rooms.length > 0 && (

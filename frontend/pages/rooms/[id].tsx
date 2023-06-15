@@ -154,9 +154,10 @@ export default function Room(props: Props) {
           position="sticky"
           bottom={0}
           alignItems="end"
-          onSubmit={(event) => {
+          onSubmit={async event => {
             setIsLoadingSubmitButton(true)
-            sendMessage(event).finally(() => setIsLoadingSubmitButton(false))
+            await sendMessage(event)
+            setIsLoadingSubmitButton(false)
           }}
         >
           <Textarea
