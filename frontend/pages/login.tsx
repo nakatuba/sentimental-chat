@@ -18,6 +18,7 @@ import { useState } from 'react'
 export default function Login() {
   const router = useRouter()
   const [showUnauthrizedError, setShowUnauthrizedError] = useState(false)
+  const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
 
   const login = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -40,7 +41,12 @@ export default function Login() {
 
   return (
     <FormFlex>
-      <FormBox onSubmit={login}>
+      <FormBox
+        onSubmit={event => {
+          setIsLoadingSubmitButton(true)
+          login(event).finally(() => setIsLoadingSubmitButton(false))
+        }}
+      >
         <Stack spacing={4}>
           {showUnauthrizedError && (
             <Alert status="error">
@@ -63,7 +69,9 @@ export default function Login() {
             <Input type="password" />
           </FormControl>
         </Stack>
-        <BlueButton type="submit">Sign in</BlueButton>
+        <BlueButton type="submit" isLoading={isLoadingSubmitButton}>
+          Sign in
+        </BlueButton>
       </FormBox>
       <Text>
         アカウントをお持ちでない方は{' '}

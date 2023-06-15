@@ -16,6 +16,7 @@ import { getToken } from 'next-auth/jwt'
 import { useSession } from 'next-auth/react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import type { User } from 'types'
 
 type Props = {
@@ -25,6 +26,7 @@ type Props = {
 export default function Home(props: Props) {
   const router = useRouter()
   const { data: session } = useSession()
+  const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
 
   const createRoom = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -64,7 +66,12 @@ export default function Home(props: Props) {
     <>
       <UserHeader user={props.user} />
       <FormFlex>
-        <FormBox onSubmit={createRoom}>
+        <FormBox
+          onSubmit={event => {
+            setIsLoadingSubmitButton(true)
+            createRoom(event).finally(() => setIsLoadingSubmitButton(false))
+          }}
+        >
           {props.user.rooms.length > 0 && (
             <>
               <Heading size="lg">Your Rooms</Heading>
@@ -91,7 +98,9 @@ export default function Home(props: Props) {
           <FormControl id="name">
             <Input type="text" placeholder="Room Name" isRequired />
           </FormControl>
-          <BlueButton type="submit">新しい Room を作成</BlueButton>
+          <BlueButton type="submit" isLoading={isLoadingSubmitButton}>
+            新しい Room を作成
+          </BlueButton>
         </FormBox>
       </FormFlex>
     </>
