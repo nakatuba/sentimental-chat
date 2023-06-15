@@ -21,12 +21,14 @@ export default function Login() {
   const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
 
   const login = async (event: React.FormEvent) => {
+    setIsLoadingSubmitButton(true)
+
     event.preventDefault()
     const target = event.target as typeof event.target & {
       username: { value: string }
       password: { value: string }
     }
-    await signIn('credentials', {
+    signIn('credentials', {
       redirect: false,
       username: target.username.value,
       password: target.password.value,
@@ -35,19 +37,14 @@ export default function Login() {
         router.push((router.query.callbackUrl as string) ?? '/')
       } else {
         setShowUnauthrizedError(true)
+        setIsLoadingSubmitButton(false)
       }
     })
   }
 
   return (
     <FormFlex>
-      <FormBox
-        onSubmit={async event => {
-          setIsLoadingSubmitButton(true)
-          await login(event)
-          setIsLoadingSubmitButton(false)
-        }}
-      >
+      <FormBox onSubmit={login}>
         <Stack spacing={4}>
           {showUnauthrizedError && (
             <Alert status="error">

@@ -55,6 +55,8 @@ export default function Room(props: Props) {
   useEffect(() => bottomBoxRef.current?.scrollIntoView(), [messages])
 
   const sendMessage = async (event: React.FormEvent) => {
+    setIsLoadingSubmitButton(true)
+
     event.preventDefault()
     const target = event.target as typeof event.target & {
       body: { value: string }
@@ -77,8 +79,10 @@ export default function Room(props: Props) {
     if (!res.ok) {
       if (res.status === 401) {
         router.push('/login')
+      } else {
+        setIsLoadingSubmitButton(false)
+        return
       }
-      return
     }
 
     const message = await res.json()
@@ -86,6 +90,8 @@ export default function Room(props: Props) {
     socketRef.current?.send(JSON.stringify({ message }))
 
     target.body.value = ''
+
+    setIsLoadingSubmitButton(false)
   }
 
   return (
@@ -154,11 +160,7 @@ export default function Room(props: Props) {
           position="sticky"
           bottom={0}
           alignItems="end"
-          onSubmit={async event => {
-            setIsLoadingSubmitButton(true)
-            await sendMessage(event)
-            setIsLoadingSubmitButton(false)
-          }}
+          onSubmit={sendMessage}
         >
           <Textarea
             name="body"

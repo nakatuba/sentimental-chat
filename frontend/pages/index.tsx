@@ -29,6 +29,8 @@ export default function Home(props: Props) {
   const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
 
   const createRoom = async (event: React.FormEvent) => {
+    setIsLoadingSubmitButton(true)
+
     event.preventDefault()
     const target = event.target as typeof event.target & {
       name: { value: string }
@@ -50,8 +52,10 @@ export default function Home(props: Props) {
     if (!res.ok) {
       if (res.status === 401) {
         router.push('/login')
+      } else {
+        setIsLoadingSubmitButton(false)
+        return
       }
-      return
     }
 
     const room = await res.json()
@@ -66,13 +70,7 @@ export default function Home(props: Props) {
     <>
       <UserHeader user={props.user} />
       <FormFlex>
-        <FormBox
-          onSubmit={async event => {
-            setIsLoadingSubmitButton(true)
-            await createRoom(event)
-            setIsLoadingSubmitButton(false)
-          }}
-        >
+        <FormBox onSubmit={createRoom}>
           {props.user.rooms.length > 0 && (
             <>
               <Heading size="lg">Your Rooms</Heading>

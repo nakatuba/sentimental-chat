@@ -44,6 +44,8 @@ export default function Signup() {
   }
 
   const signup = async (event: React.FormEvent) => {
+    setIsLoadingSubmitButton(true)
+
     event.preventDefault()
     const target = event.target as typeof event.target & {
       username: { value: string }
@@ -66,10 +68,11 @@ export default function Signup() {
       const errorMessage = await res.json()
       errorMessage.username && setUsernameErrorMessages(errorMessage.username)
       errorMessage.password && setPasswordErrorMessages(errorMessage.password)
+      setIsLoadingSubmitButton(false)
       return
     }
 
-    await signIn('credentials', {
+    signIn('credentials', {
       username: target.username.value,
       password: target.password.value,
       callbackUrl: (router.query.callbackUrl as string) ?? '/',
@@ -78,13 +81,7 @@ export default function Signup() {
 
   return (
     <FormFlex>
-      <FormBox
-        onSubmit={async event => {
-          setIsLoadingSubmitButton(true)
-          await signup(event)
-          setIsLoadingSubmitButton(false)
-        }}
-      >
+      <FormBox onSubmit={signup}>
         <Stack spacing={4}>
           <Stack spacing={4} px={24}>
             <Avatar
