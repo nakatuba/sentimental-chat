@@ -16,6 +16,9 @@ resource "google_cloud_run_service" "service" {
       }
     }
     metadata {
+      labels = {
+        "run.googleapis.com/startupProbeType" = "Default"
+      }
       annotations = var.template_annotations
     }
   }
