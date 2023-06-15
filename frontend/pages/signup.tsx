@@ -69,7 +69,7 @@ export default function Signup() {
       return
     }
 
-    signIn('credentials', {
+    await signIn('credentials', {
       username: target.username.value,
       password: target.password.value,
       callbackUrl: (router.query.callbackUrl as string) ?? '/',
@@ -79,9 +79,10 @@ export default function Signup() {
   return (
     <FormFlex>
       <FormBox
-        onSubmit={event => {
+        onSubmit={async event => {
           setIsLoadingSubmitButton(true)
-          signup(event).finally(() => setIsLoadingSubmitButton(false))
+          await signup(event)
+          setIsLoadingSubmitButton(false)
         }}
       >
         <Stack spacing={4}>
