@@ -26,6 +26,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false)
   const [usernameErrorMessages, setUsernameErrorMessages] = useState([])
   const [passwordErrorMessages, setPasswordErrorMessages] = useState([])
+  const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
 
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -77,7 +78,12 @@ export default function Signup() {
 
   return (
     <FormFlex>
-      <FormBox onSubmit={signup}>
+      <FormBox
+        onSubmit={event => {
+          setIsLoadingSubmitButton(true)
+          signup(event).finally(() => setIsLoadingSubmitButton(false))
+        }}
+      >
         <Stack spacing={4}>
           <Stack spacing={4} px={24}>
             <Avatar
@@ -134,7 +140,9 @@ export default function Signup() {
             ))}
           </FormControl>
         </Stack>
-        <BlueButton type="submit">Sign up</BlueButton>
+        <BlueButton type="submit" isLoading={isLoadingSubmitButton}>
+          Sign up
+        </BlueButton>
       </FormBox>
       <Text>
         すでにアカウントをお持ちの方は{' '}
