@@ -9,6 +9,7 @@ import {
   HStack,
   IconButton,
   Textarea,
+  CircularProgress,
 } from '@chakra-ui/react'
 import moment from 'moment'
 import type { GetServerSidePropsContext } from 'next'
@@ -32,6 +33,7 @@ export default function Room(props: Props) {
   const sendButtonRef = useRef<HTMLButtonElement>(null)
   const { data: session } = useSession()
   const [messages, setMessages] = useState(props.room.messages)
+  const [connected, setConnected] = useState(false)
 
   useEffect(() => {
     socketRef.current = new WebSocket(
@@ -41,17 +43,33 @@ export default function Room(props: Props) {
       )}/ws/chat/${props.room.id}/`
     )
 
+    socketRef.current.onopen = () => setConnected(true)
+
     socketRef.current.onmessage = function (e) {
       const data = JSON.parse(e.data)
       setMessages(prevMessages => [...prevMessages, data.message])
     }
 
+    socketRef.current.onclose = () => setConnected(false)
+
     return () => {
       socketRef.current?.close()
     }
-  }, [props.room.id])
+  }, [])
 
   useEffect(() => bottomBoxRef.current?.scrollIntoView(), [messages])
+
+  if (!connected) {
+    return (
+      <Flex
+        minH='100vh'
+        justifyContent='center'
+        alignItems="center"
+      >
+        <CircularProgress isIndeterminate />
+      </Flex>
+    )
+  }
 
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault()
