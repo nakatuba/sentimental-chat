@@ -46,6 +46,18 @@ resource "google_vpc_access_connector" "connector" {
   network       = "default"
 }
 
+module "analyzer_ci" {
+  source = "./modules/ci"
+
+  service_name = "analyzer"
+}
+
+module "backend_ci" {
+  source = "./modules/ci"
+
+  service_name = "backend"
+}
+
 module "analyzer_cd" {
   source = "./modules/cd"
 

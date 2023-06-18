@@ -1,0 +1,13 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--tag=analyzer",
+        "--cache-from=gcr.io/$PROJECT_ID/analyzer:latest",
+        ".",
+      ]
+    dir: "analyzer"
+
+  - name: "gcr.io/$PROJECT_ID/docker-compose"
+    args: ["-f", "docker-compose-ci.yml", "run", "--rm", "analyzer", "pytest"]
