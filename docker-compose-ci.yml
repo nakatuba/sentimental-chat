@@ -1,7 +1,7 @@
 version: "3"
 services:
   backend:
-    build: ./backend
+    image: backend
     ports:
       - "8000:8000"
     environment:
@@ -14,7 +14,7 @@ services:
       - redis
 
   analyzer:
-    build: ./analyzer
+    image: analyzer
     ports:
       - "9000:9000"
 

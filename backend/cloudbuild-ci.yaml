@@ -1,4 +1,25 @@
 steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--tag=backend",
+        "--cache-from=gcr.io/$PROJECT_ID/backend:latest",
+        ".",
+      ]
+    dir: "backend"
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--tag=analyzer",
+        "--cache-from=gcr.io/$PROJECT_ID/analyzer:latest",
+        ".",
+      ]
+    dir: "analyzer"
+    waitFor: ["-"]
+
   - name: "gcr.io/$PROJECT_ID/docker-compose"
     args:
       [
