@@ -1,0 +1,13 @@
+steps:
+  - name: "gcr.io/$PROJECT_ID/docker-compose"
+    args:
+      [
+        "-f",
+        "docker-compose-ci.yml",
+        "run",
+        "--rm",
+        "backend",
+        "python",
+        "manage.py",
+        "test",
+      ]
