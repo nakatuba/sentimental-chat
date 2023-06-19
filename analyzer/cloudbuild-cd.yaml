@@ -17,6 +17,20 @@ steps:
         "gcr.io/$PROJECT_ID/analyzer",
         "--region",
         "asia-northeast1",
+        "--no-traffic",
+      ]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "services",
+        "update-traffic",
+        "analyzer",
+        "--region",
+        "asia-northeast1",
+        "--to-latest",
       ]
 
 images:
