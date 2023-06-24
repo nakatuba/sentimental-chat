@@ -1,6 +1,6 @@
 import { UserHeader } from 'components/header'
 import { MessageBox } from 'components/message-box'
-import type { User, Room } from 'types'
+import type { User, Room, Message } from 'types'
 import {
   Box,
   Text,
@@ -23,6 +23,7 @@ import { IoChevronBack } from 'react-icons/io5'
 type Props = {
   user: User
   room: Room
+  messages: Message[]
 }
 
 export default function Room(props: Props) {
@@ -31,7 +32,7 @@ export default function Room(props: Props) {
   const bottomBoxRef = useRef<HTMLDivElement>(null)
   const sendButtonRef = useRef<HTMLButtonElement>(null)
   const { data: session } = useSession()
-  const [messages, setMessages] = useState(props.room.messages)
+  const [messages, setMessages] = useState(props.messages)
   const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export default function Room(props: Props) {
       body: { value: string }
     }
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/messages/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/api/rooms/${props.room.id}/messages/`,
       {
         method: 'POST',
         headers: {
@@ -70,7 +71,6 @@ export default function Room(props: Props) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          room: props.room.id,
           body: target.body.value,
         }),
       }
@@ -225,19 +225,26 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   })
 
-  if (!room) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+  const messages = await fetch(
+    `${process.env.BACKEND_HOST}/api/rooms/${room.id}/messages?ordering=created_at`,
+    {
+      headers: {
+        Authorization: `Bearer ${token?.accessToken}`,
       },
     }
-  }
+  ).then(res => {
+    if (res.ok) {
+      return res.json()
+    }
+  })
 
-  return {
-    props: {
-      user,
-      room,
-    },
+  if (room && messages) {
+    return {
+      props: {
+        user,
+        room,
+        messages,
+      },
+    }
   }
 }

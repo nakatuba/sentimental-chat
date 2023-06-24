@@ -2,8 +2,7 @@ import requests
 from chat import settings
 from django.contrib.auth import get_user_model
 from djoser import views
-from rest_framework import filters, status, viewsets
-from rest_framework.response import Response
+from rest_framework import filters, viewsets
 
 from .models import Message, Room, SentimentScore
 from .serializers import MessageSerializer, RoomSerializer, UserSerializer
@@ -22,22 +21,42 @@ class RoomViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['created_at']
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
-class MessageViewSet(viewsets.ModelViewSet):
+
+class UserRoomViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = RoomSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at']
+
+    def get_queryset(self):
+        return Room.objects.filter(owner=self.kwargs['user_id'])
+
+
+class MessageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['created_at']
 
-    def create(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+
+class RoomMessageViewSet(viewsets.ModelViewSet):
+    serializer_class = MessageSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created_at']
+
+    def get_queryset(self):
+        return Message.objects.filter(room=self.kwargs['room_pk'])
+
+    def perform_create(self, serializer):
         res = requests.post(
             f'{settings.ANALYZER_HOST}/analyze',
             json={'body': serializer.validated_data['body']},
         )
-        sentiment_score = SentimentScore(**res.json())
-        sentiment_score.save()
-        serializer.save(sender=request.user, sentiment_score=sentiment_score)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        sentiment_score = SentimentScore.objects.create(**res.json())
+        serializer.save(
+            sender=self.request.user,
+            room_id=self.kwargs['room_pk'],
+            sentiment_score=sentiment_score,
+        )

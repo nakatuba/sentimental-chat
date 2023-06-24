@@ -17,10 +17,11 @@ import { useSession } from 'next-auth/react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import type { User } from 'types'
+import type { Room, User } from 'types'
 
 type Props = {
   user: User
+  rooms: Room[]
 }
 
 export default function Home(props: Props) {
@@ -71,11 +72,11 @@ export default function Home(props: Props) {
       <UserHeader user={props.user} />
       <FormFlex>
         <FormBox onSubmit={createRoom}>
-          {props.user.rooms.length > 0 && (
+          {props.rooms.length > 0 && (
             <>
               <Heading size="lg">Your Rooms</Heading>
               <Stack alignItems="center">
-                {props.user.rooms.map(room => (
+                {props.rooms.map(room => (
                   <NextLink
                     key={room.id}
                     href={{ pathname: '/rooms/[id]', query: { id: room.id } }}
@@ -109,13 +110,17 @@ export default function Home(props: Props) {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const token = await getToken({ req: ctx.req })
 
-  const res = await fetch(`${process.env.BACKEND_HOST}/api/users/me/`, {
+  const user = await fetch(`${process.env.BACKEND_HOST}/api/users/me/`, {
     headers: {
       Authorization: `Bearer ${token?.accessToken}`,
     },
+  }).then(res => {
+    if (res.ok) {
+      return res.json()
+    }
   })
 
-  if (!res.ok) {
+  if (!user) {
     return {
       redirect: {
         destination: '/login',
@@ -124,11 +129,24 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   }
 
-  const user = await res.json()
+  const rooms = await fetch(
+    `${process.env.BACKEND_HOST}/api/users/${user.id}/rooms?ordering=created_at`,
+    {
+      headers: {
+        Authorization: `Bearer ${token?.accessToken}`,
+      },
+    }
+  ).then(res => {
+    if (res.ok) {
+      return res.json()
+    }
+  })
 
-  return {
-    props: {
-      user,
-    },
-  }
+  if (rooms)
+    return {
+      props: {
+        user,
+        rooms,
+      },
+    }
 }
