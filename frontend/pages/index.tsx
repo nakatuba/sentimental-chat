@@ -130,7 +130,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   const rooms = await fetch(
-    `${process.env.BACKEND_HOST}/api/users/${user.id}/rooms?ordering=created_at`,
+    `${process.env.BACKEND_HOST}/api/users/${user.id}/rooms/`,
     {
       headers: {
         Authorization: `Bearer ${token?.accessToken}`,

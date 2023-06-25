@@ -2,9 +2,10 @@ import requests
 from chat import settings
 from django.contrib.auth import get_user_model
 from djoser import views
-from rest_framework import filters, viewsets
+from rest_framework import viewsets
 
 from .models import Message, Room, SentimentScore
+from .pagination import RoomMessagePagination
 from .serializers import MessageSerializer, RoomSerializer, UserSerializer
 
 User = get_user_model()
@@ -18,8 +19,6 @@ class UserViewSet(views.UserViewSet):
 class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['created_at']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -27,8 +26,6 @@ class RoomViewSet(viewsets.ModelViewSet):
 
 class UserRoomViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = RoomSerializer
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['created_at']
 
     def get_queryset(self):
         return Room.objects.filter(owner=self.kwargs['user_id'])
@@ -37,14 +34,11 @@ class UserRoomViewSet(viewsets.ReadOnlyModelViewSet):
 class MessageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['created_at']
 
 
 class RoomMessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['created_at']
+    pagination_class = RoomMessagePagination
 
     def get_queryset(self):
         return Message.objects.filter(room=self.kwargs['room_pk'])

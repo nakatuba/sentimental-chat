@@ -19,11 +19,16 @@ import { useEffect, useRef, useState } from 'react'
 import { IoSend } from 'react-icons/io5'
 import TextareaAutosize from 'react-textarea-autosize'
 import { IoChevronBack } from 'react-icons/io5'
+import { useInView } from 'react-intersection-observer'
 
 type Props = {
   user: User
   room: Room
-  messages: Message[]
+  messages: {
+    next: string | null
+    previous: string | null
+    results: Message[]
+  }
 }
 
 export default function Room(props: Props) {
@@ -32,8 +37,10 @@ export default function Room(props: Props) {
   const bottomBoxRef = useRef<HTMLDivElement>(null)
   const sendButtonRef = useRef<HTMLButtonElement>(null)
   const { data: session } = useSession()
-  const [messages, setMessages] = useState(props.messages)
+  const [nextLink, setNextLink] = useState(props.messages.next)
+  const [messages, setMessages] = useState(props.messages.results)
   const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
+  const [ref, inView] = useInView()
 
   useEffect(() => {
     socketRef.current = new WebSocket(
@@ -45,7 +52,7 @@ export default function Room(props: Props) {
 
     socketRef.current.onmessage = function (e) {
       const data = JSON.parse(e.data)
-      setMessages(prevMessages => [...prevMessages, data.message])
+      setMessages(prevMessages => [data.message, ...prevMessages])
     }
 
     return () => {
@@ -54,6 +61,32 @@ export default function Room(props: Props) {
   }, [])
 
   useEffect(() => bottomBoxRef.current?.scrollIntoView(), [messages])
+
+  useEffect(() => {
+    if (inView && nextLink) {
+      fetchMessages(nextLink)
+    }
+  }, [inView])
+
+  const fetchMessages = async (link: string) => {
+    const messages = await fetch(
+      link.replace('http://backend', 'http://localhost'),
+      {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      }
+    ).then(res => {
+      if (res.ok) {
+        return res.json()
+      }
+    })
+
+    if (messages) {
+      setMessages(prevMessages => [...prevMessages, ...messages.results])
+      setNextLink(messages.next)
+    }
+  }
 
   const sendMessage = async (event: React.FormEvent) => {
     setIsLoadingSubmitButton(true)
@@ -114,8 +147,8 @@ export default function Room(props: Props) {
       </UserHeader>
       <Flex flexDirection="column" pt={24} minH="100vh" bg="gray.100">
         <Box flex={1}>
-          {messages.map((message, index) => (
-            <Box key={message.id}>
+          {[...messages].reverse().map((message, index, messages) => (
+            <Box key={message.id} ref={index === 0 ? ref : null}>
               {(index === 0 ||
                 moment(message.created_at).isAfter(
                   messages[index - 1].created_at,
@@ -226,7 +259,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   })
 
   const messages = await fetch(
-    `${process.env.BACKEND_HOST}/api/rooms/${room.id}/messages?ordering=created_at`,
+    `${process.env.BACKEND_HOST}/api/rooms/${room.id}/messages/`,
     {
       headers: {
         Authorization: `Bearer ${token?.accessToken}`,
