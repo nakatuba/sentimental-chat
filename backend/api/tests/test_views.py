@@ -4,7 +4,7 @@ from django.urls import reverse
 from faker import Faker
 from rest_framework import status
 from rest_framework.test import APITestCase
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .factories import RoomFactory, UserFactory
 
@@ -12,21 +12,23 @@ User = get_user_model()
 fake = Faker('ja_jp')
 
 
-class MessageViewSetTests(APITestCase):
+class RoomMessageViewSetTests(APITestCase):
     def setUp(self):
         self.user = UserFactory()
-        self.access_token = AccessToken.for_user(self.user)
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + str(self.access_token))
+        self.room = RoomFactory()
+        self.refresh = RefreshToken.for_user(self.user)
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer ' + str(self.refresh.access_token)
+        )
 
     def test_create(self):
-        url = reverse('message-list')
-        room = RoomFactory()
-        data = {'room': room.id, 'body': fake.text()}
+        url = reverse('room-messages-list', kwargs={'room_pk': self.room.id})
+        data = {'body': fake.text()}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Message.objects.count(), 1)
         self.assertEqual(Message.objects.get().sender, self.user)
-        self.assertEqual(Message.objects.get().room, room)
+        self.assertEqual(Message.objects.get().room, self.room)
         self.assertEqual(Message.objects.get().body, data['body'])
         for emotion in [
             'joy',

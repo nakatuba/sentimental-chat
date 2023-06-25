@@ -14,7 +14,7 @@ class User(AbstractUser, UUIDModel):
 
 class Room(UUIDModel):
     created_at = models.DateTimeField(auto_now_add=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rooms')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
 
 
@@ -32,7 +32,7 @@ class SentimentScore(UUIDModel):
 class Message(UUIDModel):
     created_at = models.DateTimeField(auto_now_add=True)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='messages')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     body = models.TextField()
     sentiment_score = models.OneToOneField(
         SentimentScore, on_delete=models.CASCADE, null=True, blank=True

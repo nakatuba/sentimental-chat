@@ -1,14 +1,12 @@
 import factory
 from api.models import Room
 from django.contrib.auth import get_user_model
-from faker import Faker
 
 User = get_user_model()
-fake = Faker('ja_jp')
 
 
 class UserFactory(factory.django.DjangoModelFactory):
-    username = fake.name()
+    username = factory.Faker('user_name')
 
     class Meta:
         model = User

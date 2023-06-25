@@ -2,16 +2,13 @@ export type User = {
   id: string
   username: string
   icon: string | null
-  rooms: {
-    id: string
-    name: string
-  }[]
 }
 
 export type Room = {
   id: string
+  created_at: string
+  owner: User
   name: string
-  messages: Message[]
 }
 
 export type SentimentScore = {
@@ -29,6 +26,7 @@ export type Message = {
   id: string
   created_at: string
   sender: User
+  room: Room
   body: string
   sentiment_score: SentimentScore | null
 }
