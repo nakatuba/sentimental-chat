@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from 'react'
 import { IoSend } from 'react-icons/io5'
 import TextareaAutosize from 'react-textarea-autosize'
 import { IoChevronBack } from 'react-icons/io5'
-import { useInView } from 'react-intersection-observer'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 type Props = {
   user: User
@@ -34,13 +34,16 @@ type Props = {
 export default function Room(props: Props) {
   const router = useRouter()
   const socketRef = useRef<WebSocket>()
+  const headerRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLDivElement & HTMLFormElement>(null)
   const bottomBoxRef = useRef<HTMLDivElement>(null)
   const sendButtonRef = useRef<HTMLButtonElement>(null)
   const { data: session } = useSession()
   const [nextLink, setNextLink] = useState(props.messages.next)
   const [messages, setMessages] = useState(props.messages.results)
+  const [headerHeight, setHeaderHeight] = useState(0)
+  const [textareaHeight, setTextareaHeight] = useState(0)
   const [isLoadingSubmitButton, setIsLoadingSubmitButton] = useState(false)
-  const [ref, inView] = useInView()
 
   useEffect(() => {
     socketRef.current = new WebSocket(
@@ -53,6 +56,7 @@ export default function Room(props: Props) {
     socketRef.current.onmessage = function (e) {
       const data = JSON.parse(e.data)
       setMessages(prevMessages => [data.message, ...prevMessages])
+      bottomBoxRef.current?.scrollIntoView()
     }
 
     return () => {
@@ -60,17 +64,19 @@ export default function Room(props: Props) {
     }
   }, [])
 
-  useEffect(() => bottomBoxRef.current?.scrollIntoView(), [messages])
+  useEffect(() => {
+    headerRef.current && setHeaderHeight(headerRef.current.clientHeight)
+  }, [headerRef.current?.clientHeight])
 
   useEffect(() => {
-    if (inView && nextLink) {
-      fetchMessages(nextLink)
-    }
-  }, [inView])
+    textareaRef.current && setTextareaHeight(textareaRef.current.clientHeight)
+  }, [textareaRef.current?.clientHeight])
 
-  const fetchMessages = async (link: string) => {
+  const fetchMessages = async () => {
+    if (!nextLink) return
+
     const messages = await fetch(
-      link.replace('http://backend', 'http://localhost'),
+      nextLink.replace('http://backend', 'http://localhost'),
       {
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
@@ -129,7 +135,7 @@ export default function Room(props: Props) {
 
   return (
     <>
-      <UserHeader user={props.user} showCopyLinkButton>
+      <UserHeader user={props.user} innerRef={headerRef} showCopyLinkButton>
         <HStack position="relative">
           <IconButton
             aria-label="Exit room"
@@ -145,46 +151,69 @@ export default function Room(props: Props) {
           </Text>
         </HStack>
       </UserHeader>
-      <Flex flexDirection="column" pt={24} minH="100vh" bg="gray.100">
-        <Box flex={1}>
-          {[...messages].reverse().map((message, index, messages) => (
-            <Box key={message.id} ref={index === 0 ? ref : null}>
-              {(index === 0 ||
-                moment(message.created_at).isAfter(
-                  messages[index - 1].created_at,
-                  'day'
-                )) && (
-                <Center>
-                  <Box
-                    px={4}
-                    my={2}
-                    fontWeight="bold"
-                    border="1px"
-                    borderColor="gray"
-                    borderRadius="full"
-                    display="inline-block"
-                  >
-                    {(() => {
-                      const messageDate = moment(message.created_at)
-                      const today = moment()
-                      const yesterday = moment().subtract(1, 'days')
+      <Flex
+        flexDirection="column"
+        pt={`${headerHeight}px`}
+        minH="100vh"
+        bg="gray.100"
+      >
+        <Flex
+          id="scrollableDiv"
+          height={`calc(100vh - ${headerHeight}px - ${textareaHeight}px)`}
+          overflow="auto"
+          flexDirection="column-reverse"
+        >
+          <InfiniteScroll
+            dataLength={messages.length}
+            next={fetchMessages}
+            style={{ display: 'flex', flexDirection: 'column-reverse' }}
+            inverse={true}
+            hasMore={!!nextLink}
+            loader={<></>}
+            scrollableTarget="scrollableDiv"
+          >
+            <Box minH={`calc(100vh - ${headerHeight}px - ${textareaHeight}px)`}>
+              {[...messages].reverse().map((message, index, messages) => (
+                <Box key={message.id}>
+                  {(index === 0
+                    ? !nextLink
+                    : moment(message.created_at).isAfter(
+                        messages[index - 1].created_at,
+                        'day'
+                      )) && (
+                    <Center>
+                      <Box
+                        px={4}
+                        my={2}
+                        fontWeight="bold"
+                        border="1px"
+                        borderColor="gray"
+                        borderRadius="full"
+                        display="inline-block"
+                      >
+                        {(() => {
+                          const messageDate = moment(message.created_at)
+                          const today = moment()
+                          const yesterday = moment().subtract(1, 'days')
 
-                      if (messageDate.isSame(today, 'day')) {
-                        return '今日'
-                      } else if (messageDate.isSame(yesterday, 'day')) {
-                        return '昨日'
-                      } else {
-                        return messageDate.format('YYYY年MM月DD日')
-                      }
-                    })()}
-                  </Box>
-                </Center>
-              )}
-              <MessageBox message={message} />
+                          if (messageDate.isSame(today, 'day')) {
+                            return '今日'
+                          } else if (messageDate.isSame(yesterday, 'day')) {
+                            return '昨日'
+                          } else {
+                            return messageDate.format('YYYY年MM月DD日')
+                          }
+                        })()}
+                      </Box>
+                    </Center>
+                  )}
+                  <MessageBox message={message} />
+                </Box>
+              ))}
+              <Box ref={bottomBoxRef} />
             </Box>
-          ))}
-          <Box ref={bottomBoxRef} />
-        </Box>
+          </InfiniteScroll>
+        </Flex>
         <HStack
           as="form"
           p={4}
@@ -194,11 +223,16 @@ export default function Room(props: Props) {
           bottom={0}
           alignItems="end"
           onSubmit={sendMessage}
+          ref={textareaRef}
         >
           <Textarea
             name="body"
             as={TextareaAutosize}
             maxRows={8}
+            onHeightChange={() =>
+              textareaRef.current &&
+              setTextareaHeight(textareaRef.current?.clientHeight)
+            }
             resize="none"
             onKeyDown={e => {
               if (e.key === 'Enter' && e.metaKey) {

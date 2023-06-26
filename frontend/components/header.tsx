@@ -13,11 +13,13 @@ import type { User } from 'types'
 
 type UserHeaderProps = FlexProps & {
   user: User
+  innerRef?: React.Ref<HTMLDivElement>
   showCopyLinkButton?: boolean
 }
 
 export function UserHeader({
   user,
+  innerRef,
   showCopyLinkButton,
   children,
   ...props
@@ -33,6 +35,7 @@ export function UserHeader({
       w="100%"
       zIndex={2}
       bg="white"
+      ref={innerRef}
       {...props}
     >
       <HStack flex={1} spacing={4}>
