@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from main import app
 
 client = TestClient(app)
-fake = Faker("ja_jp")
+fake = Faker("ja_JP")
 
 
 def test_analyze():
