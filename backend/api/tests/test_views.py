@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .factories import RoomFactory, UserFactory
 
 User = get_user_model()
-fake = Faker('ja_jp')
+fake = Faker('ja_JP')
 
 
 class RoomMessageViewSetTests(APITestCase):
