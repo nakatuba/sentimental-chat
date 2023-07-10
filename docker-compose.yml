@@ -46,3 +46,13 @@ services:
     image: redis
     ports:
       - "6379:6379"
+
+  terraform:
+    build: ./terraform
+    volumes:
+      - ./terraform:/terraform
+      - ./credentials.json:/credentials.json
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
+    deploy:
+      replicas: 0
