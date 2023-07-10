@@ -27,10 +27,11 @@ services:
     build: ./analyzer
     volumes:
       - ./analyzer:/analyzer
+      - ./credentials.json:/credentials.json
     ports:
       - "9000:9000"
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/analyzer/credentials.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
 
   db:
     image: postgres
