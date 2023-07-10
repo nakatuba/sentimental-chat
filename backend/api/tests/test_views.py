@@ -1,5 +1,4 @@
 from api.models import Message, Room
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from faker import Faker
 from rest_framework import status
@@ -8,7 +7,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .factories import MessageFactory, RoomFactory, UserFactory
 
-User = get_user_model()
 fake = Faker('ja_JP')
 
 
