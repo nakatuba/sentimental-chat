@@ -142,11 +142,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   })
 
-  if (rooms)
-    return {
-      props: {
-        user,
-        rooms,
-      },
-    }
+  return {
+    props: {
+      user,
+      rooms,
+    },
+  }
 }
