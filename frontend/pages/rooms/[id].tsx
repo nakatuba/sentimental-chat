@@ -292,6 +292,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   })
 
+  if (!room) {
+    return {
+      notFound: true
+    }
+  }
+
   const messages = await fetch(
     `${process.env.BACKEND_HOST}/api/rooms/${room.id}/messages/`,
     {
@@ -305,13 +311,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   })
 
-  if (room && messages) {
-    return {
-      props: {
-        user,
-        room,
-        messages,
-      },
-    }
+  return {
+    props: {
+      user,
+      room,
+      messages,
+    },
   }
 }
