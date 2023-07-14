@@ -1,4 +1,4 @@
 provider "google" {
-  project = var.project_id
+  project = "sentimental-chat-381807"
   region  = "asia-northeast1"
 }

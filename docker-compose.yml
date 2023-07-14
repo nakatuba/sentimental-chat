@@ -27,11 +27,9 @@ services:
     build: ./analyzer
     volumes:
       - ./analyzer:/analyzer
-      - ./credentials.json:/credentials.json
+      - gcloud-config:/root/.config/gcloud
     ports:
       - "9000:9000"
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
 
   db:
     image: postgres
@@ -51,11 +49,18 @@ services:
     build: ./terraform
     volumes:
       - ./terraform:/terraform
-      - ./credentials.json:/credentials.json
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
+      - gcloud-config:/root/.config/gcloud
+    deploy:
+      replicas: 0
+
+  gcloud:
+    image: google/cloud-sdk
+    entrypoint: gcloud
+    volumes:
+      - gcloud-config:/root/.config/gcloud
     deploy:
       replicas: 0
 
 volumes:
   db-data:
+  gcloud-config:

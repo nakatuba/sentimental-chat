@@ -6,7 +6,7 @@ resource "google_project_iam_member" "default_compute_sa_iam" {
     "roles/secretmanager.secretAccessor"
   ])
 
-  project = var.project_id
+  project = data.google_project.project.project_id
   role    = each.value
   member  = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
 }
@@ -19,7 +19,7 @@ resource "google_project_iam_member" "cloudbuild_sa_iam" {
     "roles/secretmanager.secretAccessor"
   ])
 
-  project = var.project_id
+  project = data.google_project.project.project_id
   role    = each.value
   member  = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
 }

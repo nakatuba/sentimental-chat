@@ -73,7 +73,7 @@ module "backend_cd" {
 module "analyzer" {
   source = "./modules/cloud-run"
 
-  project_id   = var.project_id
+  project_id   = data.google_project.project.project_id
   service_name = "analyzer"
   port         = 9000
   limits = {
@@ -88,7 +88,7 @@ module "analyzer" {
 module "backend" {
   source = "./modules/cloud-run"
 
-  project_id   = var.project_id
+  project_id   = data.google_project.project.project_id
   service_name = "backend"
   port         = 8000
   template_annotations = {
