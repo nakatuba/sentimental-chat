@@ -8,7 +8,9 @@ from utils.gcloud import download_from_gcs
 
 app = FastAPI()
 analyzer: WrimeAnalyzer = download_from_gcs(
-    bucket_name="sentimental-chat-analyzer", blob_name="analyzer.pkl"
+    project="sentimental-chat-381807",
+    bucket_name="sentimental-chat-analyzer",
+    blob_name="analyzer.pkl",
 )
 
 

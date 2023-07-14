@@ -2,6 +2,10 @@
 
 ## Setup
 
+```
+docker-compose run --rm gcloud auth application-default login
+```
+
 ### frontend
 
 ```
@@ -28,6 +32,12 @@ docker-compose run --rm backend python manage.py migrate
 SECRET_KEY=xxxx
 DEBUG=True
 ANALYZER_HOST=http://analyzer:9000
+```
+
+### terraform
+
+```
+docker-compose run --rm terraform init
 ```
 
 ## Run Server
